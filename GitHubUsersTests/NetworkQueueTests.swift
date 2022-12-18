@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import GitHubUsers
 
 final class NetworkQueueTests: XCTestCase {
 
@@ -52,7 +53,7 @@ final class NetworkQueueTests: XCTestCase {
         XCTAssertFalse(counter.isOverLimit, "Network Queue job execution is not synchronous")
     }
 
-    // MARK: - Mockup
+    // MARK: - Mockups
 
     // Keep count and if count ever went over the limit
     class Counter {

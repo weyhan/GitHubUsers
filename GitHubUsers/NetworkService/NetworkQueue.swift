@@ -9,12 +9,12 @@ import Foundation
 
 // MARK: - NetworkQueue Supporting Types
 /// A type that can be enqueued in the NetworkQueue singleton object.
-protocol NetworkQueueable {
+public protocol NetworkQueueable {
     func resume()
 }
 
 /// Methods for informing the network queue of the operation status for the executing network job.
-protocol NetworkQueueDelegate {
+public protocol NetworkQueueDelegate {
     func release()
 }
 
@@ -23,9 +23,9 @@ protocol NetworkQueueDelegate {
 /// Singleton network queue.
 ///
 /// Queued network jobs are executed sequently where only one job will be processed at any one time.
-final class NetworkQueue: NetworkQueueDelegate {
+final public class NetworkQueue: NetworkQueueDelegate {
     // Make NetworkQueue a Singleton object.
-    static let shared = NetworkQueue()
+    public static let shared = NetworkQueue()
     private init() { }
 
     /// Queue state code
@@ -53,7 +53,7 @@ final class NetworkQueue: NetworkQueueDelegate {
     // MARK: - Public Properties
 
     /// A Boolean value indicating whether the network queue is empty.
-    var isEmpty: Bool {
+    public var isEmpty: Bool {
         queueSemaphore.wait()
         let result = queue.isEmpty
         queueSemaphore.signal()
@@ -61,7 +61,7 @@ final class NetworkQueue: NetworkQueueDelegate {
     }
 
     /// The number of jobs enqueued in the network queue.
-    var count: Int {
+    public var count: Int {
         queueSemaphore.wait()
         let result = queue.count
         queueSemaphore.signal()
@@ -73,7 +73,7 @@ final class NetworkQueue: NetworkQueueDelegate {
     /// Append a NetworkQueueable object to the network queue.
     ///
     /// The enqueueing is semaphore guarded and is thread-safe.
-    func enqueue(networkJob: NetworkQueueable) {
+    public func enqueue(networkJob: NetworkQueueable) {
         dispatchQueue.async {
             self.queueSemaphore.wait()
             self.queue.append(networkJob)
@@ -85,7 +85,7 @@ final class NetworkQueue: NetworkQueueDelegate {
     ///
     /// The processing of the network queued jobs are semaphore guarded and thread-safe. Each task will be executed sequentially
     /// where only one job at a time will be executed.
-    func resume() {
+    public func resume() {
         dispatchQueue.async { [unowned self] in
             guard start() else { return }
 
@@ -107,7 +107,7 @@ final class NetworkQueue: NetworkQueueDelegate {
     /// operation. The call signals to the network queue that the next job can proceed if one is available in the queue.
     ///
     /// - Important: This method must be call from the network job object upon completion of the job once and only once.
-    func release() {
+    public func release() {
         executeSemaphore.signal()
     }
 
