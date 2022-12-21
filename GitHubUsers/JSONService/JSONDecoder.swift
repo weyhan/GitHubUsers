@@ -31,7 +31,7 @@ extension JSONDecoder {
 class JSONDecoderService<T> where T: Decodable {
 
     private var context: NSManagedObjectContext
-    private var coreDataStack: CoreDataStack
+    private var coreDataStack: CoreDataStackProtocol
 
     /// Computed property for a JSONDecoder instance
     ///
@@ -48,7 +48,7 @@ class JSONDecoderService<T> where T: Decodable {
     /// - Parameters:
     ///   - context: The NSManagedObjectContext the decoder operates in.
     ///   - coreDataStack: The CoreData stack class to provide CoreData functions.
-    init(context: NSManagedObjectContext, coreDataStack: CoreDataStack) {
+    init(context: NSManagedObjectContext, coreDataStack: CoreDataStackProtocol) {
         self.context = context
         self.coreDataStack = coreDataStack
     }

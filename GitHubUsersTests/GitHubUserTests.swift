@@ -11,8 +11,16 @@ import CoreData
 
 final class GitHubUserTests: XCTestCase {
 
+    var coreDataStack: MockCoreDataStack!
+
     override func setUpWithError() throws {
-        CoreDataStack.shared.useInMemoryStoreContainer()
+        // Make a blank persistent store.
+        coreDataStack = MockCoreDataStack(modelName: PersistentStore.modelName)
+    }
+
+    override func tearDownWithError() throws {
+        // Clear persistent store stack.
+        coreDataStack = nil
     }
 
     /// Test decoding json data from the GitHub `users` API.
@@ -27,9 +35,9 @@ final class GitHubUserTests: XCTestCase {
             return
         }
 
-        let context = CoreDataStack.shared.mainContext
+        let context = coreDataStack.mainContext
 
-        let jsonService = JSONDecoderService<[GitHubUser]>(context: context, coreDataStack: CoreDataStack.shared)
+        let jsonService = JSONDecoderService<[GitHubUser]>(context: context, coreDataStack: coreDataStack)
         let decoded = jsonService.decode(data: data)
 
         XCTAssertNotNil(decoded)
@@ -94,20 +102,23 @@ final class GitHubUserTests: XCTestCase {
             return
         }
 
-        let context = CoreDataStack.shared.backgroundContext()
+        let context = coreDataStack.backgroundContext()
 
-        expectation(forNotification: .NSManagedObjectContextDidSave, object: CoreDataStack.shared.mainContext) { _ in
+        // Observe for NSManagedObjectContextDidSave notification.
+        expectation(forNotification: .NSManagedObjectContextDidSave, object: coreDataStack.mainContext) { _ in
                 return true
             }
 
-        let jsonService = JSONDecoderService<[GitHubUser]>(context: context, coreDataStack: CoreDataStack.shared)
+        let jsonService = JSONDecoderService<[GitHubUser]>(context: context, coreDataStack: coreDataStack)
 
+        // Decode data in the background.
         context.perform {
             let decoded = jsonService.decode(data: data)
 
             XCTAssertNotNil(decoded)
         }
 
+        // Wait for 2 seconds for NSManagedObjectContextDidSave notification.
         waitForExpectations(timeout: 2.0) { error in
             XCTAssertNil(error, "Save did not occur")
         }
@@ -118,10 +129,11 @@ final class GitHubUserTests: XCTestCase {
     ///
     /// [https://api.github.com/users?since=0](https://api.github.com/users?since=0)
     func testFetchGitHubUser() throws {
-        let context = CoreDataStack.shared.mainContext
+        let context = coreDataStack.mainContext
         let entity = NSEntityDescription.entity(forEntityName: PersistentStore.entityName, in: context)!
         let user = GitHubUser(entity: entity, insertInto: context)
 
+        // Insert test data of one user record.
         user.login = "mojombo"
         user.id = 1
         user.nodeId = "MDQ6VXNlcjE="
@@ -141,8 +153,9 @@ final class GitHubUserTests: XCTestCase {
         user.type = "User"
         user.siteAdmin = false
 
-        CoreDataStack.shared.saveContext(context)
+        coreDataStack.saveContext(context)
 
+        // Fetch all records from persistent storage.
         let request = GitHubUser.fetchRequest()
         let fetched: [GitHubUser]?
         do {
@@ -155,9 +168,14 @@ final class GitHubUserTests: XCTestCase {
             return
         }
 
+        // Make sure there is one and only one record in the persistent store. Because every
+        // XCTest cases must start with an empty persistent store, after inserting one record
+        // in the persistent store, there must be one and only one record when fetching all
+        // records.
         XCTAssertNotNil(fetched)
         XCTAssertTrue(fetched?.count == 1)
 
+        // Make sure the saved recored and the fetched record matches.
         let fetchedUser = fetched!.first!
         XCTAssertTrue(user.login == fetchedUser.login, "Mismatched data between save and fetch.")
         XCTAssertTrue(user.id == fetchedUser.id, "Mismatched data between save and fetch.")
@@ -186,13 +204,14 @@ final class GitHubUserTests: XCTestCase {
     ///
     /// [https://api.github.com/users/defunkt](https://api.github.com/users/defunkt)
     func testDecoder_FailCase() throws {
-        guard let data = loadFile(withFilename: "testDecoderIntoCoreData_FailCase", extension: "json") else {
+        // testDecoder_FailCase.json is not in the GitHubUser data structure.
+        guard let data = loadFile(withFilename: "testDecoder_FailCase", extension: "json") else {
             XCTFail("Failed to load test data; Decoding JSON test could not proceed.")
             return
         }
 
-        let context = CoreDataStack.shared.mainContext
-        let jsonService = JSONDecoderService<[GitHubUser]>(context: context, coreDataStack: CoreDataStack.shared)
+        let context = coreDataStack.mainContext
+        let jsonService = JSONDecoderService<[GitHubUser]>(context: context, coreDataStack: coreDataStack)
 
         let decoded = jsonService.decode(data: data)
 
@@ -217,28 +236,6 @@ extension GitHubUserTests {
         }
 
         return try? Data(contentsOf: url)
-    }
-
-}
-
-extension CoreDataStack {
-
-    /// Modify CoreDataStack to use in-memory container to speed up test by reducing disk I/O.
-    func useInMemoryStoreContainer() {
-        let persistentStoreDescription = NSPersistentStoreDescription()
-        persistentStoreDescription.url = URL(fileURLWithPath: "/dev/null")
-
-        let container = NSPersistentContainer(name: PersistentStore.modelName)
-        container.persistentStoreDescriptions = [persistentStoreDescription]
-
-        container.loadPersistentStores { _, error in
-            if let error = error as? NSError {
-                fatalError("Unresolved error \(error), \(error.userInfo)")
-            }
-        }
-
-        // Overwrite the normal storeContainer to use the in-memory container created above.
-        self.storeContainer = container
     }
 
 }

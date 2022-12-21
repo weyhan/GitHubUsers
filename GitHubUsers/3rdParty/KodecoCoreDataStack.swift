@@ -28,9 +28,7 @@
 
 import CoreData
 
-class CoreDataStack {
-    static let shared = CoreDataStack()
-    init() { modelName = PersistentStore.modelName }
+class KodecoCoreDataStack {
 
     // MARK: Properties
     private let modelName: String
@@ -57,10 +55,10 @@ class CoreDataStack {
         return container
     }()
 
-}
-
-// MARK: Internal
-extension CoreDataStack {
+    // MARK: Initializers
+    init(modelName: String) {
+      self.modelName = modelName
+    }
 
     public func saveContext() {
         saveContext(mainContext)
