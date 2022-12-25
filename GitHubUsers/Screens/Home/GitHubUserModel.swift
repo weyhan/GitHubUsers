@@ -18,7 +18,7 @@ class GitHubUser: NSManagedObject, Decodable {
     }
 
     @NSManaged var login: String
-    @NSManaged var id: Int32
+    @NSManaged var id: Int64
     @NSManaged var nodeId: String
     @NSManaged var avatarUrl: String
     @NSManaged var gravatarId: String
@@ -35,6 +35,9 @@ class GitHubUser: NSManagedObject, Decodable {
     @NSManaged var receivedEventsUrl: String
     @NSManaged var type: String
     @NSManaged var siteAdmin: Bool
+
+    // Keep index of UITableView row position.
+    @NSManaged var row: Int64
 
     enum CodingKeys: CodingKey {
         case login
@@ -70,7 +73,7 @@ class GitHubUser: NSManagedObject, Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         self.login = try container.decode(String.self, forKey: .login)
-        self.id = try container.decode(Int32.self, forKey: .id)
+        self.id = try container.decode(Int64.self, forKey: .id)
         self.nodeId = try container.decode(String.self, forKey: .nodeId)
         self.avatarUrl = try container.decode(String.self, forKey: .avatarUrl)
         self.gravatarId = try container.decode(String.self, forKey: .gravatarId)
@@ -87,7 +90,24 @@ class GitHubUser: NSManagedObject, Decodable {
         self.receivedEventsUrl = try container.decode(String.self, forKey: .receivedEventsUrl)
         self.type = try container.decode(String.self, forKey: .type)
         self.siteAdmin = try container.decode(Bool.self, forKey: .siteAdmin)
+
+        // Set to defaults value. Actual row value will be assigned after decoding.
+        self.row = -1
     }
 }
 
-extension GitHubUser : Identifiable { }
+extension GitHubUser: Identifiable { }
+
+extension GitHubUser {
+    static func count() -> Int {
+        let context = CoreDataStack.shared.mainContext
+
+        let fetchRequest = GitHubUser.fetchRequest()
+        fetchRequest.includesPropertyValues = false
+        fetchRequest.includesSubentities = false
+        let count = try? context.count(for: fetchRequest)
+
+        return count ?? 0
+    }
+}
+

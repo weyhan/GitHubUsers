@@ -6,17 +6,20 @@
 //
 
 import UIKit
+import CoreData
 
 /// Home view controller
 ///
 /// List GitHub users from GitHub's API for user list
-class HomeViewController: UIViewController, UITableViewDataSource {
+class HomeViewController: UIViewController, HomeViewDelegate {
 
     @IBOutlet var statusContainerView: UIView!
     @IBOutlet var statusView: UIView!
     @IBOutlet var statusLabel: UILabel!
 
     @IBOutlet var tableView: UITableView!
+
+    private let viewModel = HomeViewModel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +28,19 @@ class HomeViewController: UIViewController, UITableViewDataSource {
 
         tableView.delegate = self
         tableView.dataSource = self
+
+        viewModel.delegate = self
+    }
+
+}
+
+// MARK: - Data
+
+extension HomeViewController {
+
+    /// Reloads the rows and sections of the table view.
+    func reloadData() {
+        tableView.reloadData()
     }
 
 }
@@ -84,19 +100,32 @@ extension HomeViewController {
 
 }
 
-// MARK: - UITableViewDelegate Extension
-extension HomeViewController: UITableViewDelegate {
+// MARK: - UITableViewDataSource Extension
+extension HomeViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return viewModel.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.row == 0 {
-            return tableView.dequeueReusableCell(withIdentifier: "NormalCell", for: indexPath)
-        } else {
-            return tableView.dequeueReusableCell(withIdentifier: "NoteCell", for: indexPath)
+        let cellViewModel = viewModel.cellViewModel(forRowAt: indexPath.row)
+        let reuseIdentifier = cellViewModel.reuseIdentifier
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
+
+        // Setup cell with view model.
+        guard let homeTableViewCell = cell as? HomeTableViewCell else {
+            fatalError("Home UITableView misconfigured.")
         }
+
+        homeTableViewCell.setup(withViewModel: cellViewModel)
+
+        return cell
     }
+
+}
+
+// MARK: - UITableViewDataSource Extension
+
+extension HomeViewController: UITableViewDelegate {
 
 }

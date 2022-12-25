@@ -8,12 +8,13 @@
         <attribute name="gistsUrl" optional="YES" attributeType="String"/>
         <attribute name="gravatarId" optional="YES" attributeType="String"/>
         <attribute name="htmlUrl" optional="YES" attributeType="String"/>
-        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="login" optional="YES" attributeType="String"/>
         <attribute name="nodeId" optional="YES" attributeType="String"/>
         <attribute name="organizationsUrl" optional="YES" attributeType="String"/>
         <attribute name="receivedEventsUrl" optional="YES" attributeType="String"/>
         <attribute name="reposUrl" optional="YES" attributeType="String"/>
+        <attribute name="row" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="siteAdmin" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="starredUrl" optional="YES" attributeType="String"/>
         <attribute name="subscriptionsUrl" optional="YES" attributeType="String"/>

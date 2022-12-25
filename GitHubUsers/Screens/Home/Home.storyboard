@@ -21,7 +21,7 @@
                                 <rect key="frame" x="0.0" y="103" width="393" height="715"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="NormalCell" id="Sst-9r-CX6">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="NormalCell" id="Sst-9r-CX6" customClass="NormalTableViewCell" customModule="GitHubUsers" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="50" width="393" height="96.333335876464844"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Sst-9r-CX6" id="KFw-Ol-sdz">
@@ -74,8 +74,12 @@
                                                 <constraint firstItem="p89-2R-7Cd" firstAttribute="centerY" secondItem="XeP-MR-8Fs" secondAttribute="centerY" id="snU-xp-XGa"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="details" destination="NsM-z4-2DZ" id="kcP-IM-qhK"/>
+                                            <outlet property="login" destination="pzj-lP-sId" id="jsS-Z8-XfI"/>
+                                        </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="NoteCell" id="g9Q-dg-oOs">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="NoteCell" id="g9Q-dg-oOs" customClass="NoteTableViewCell" customModule="GitHubUsers" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="146.33333587646484" width="393" height="96.333335876464844"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="g9Q-dg-oOs" id="NK4-UE-lSo">
@@ -136,6 +140,10 @@
                                                 <constraint firstItem="Job-RD-WsE" firstAttribute="centerY" secondItem="NK4-UE-lSo" secondAttribute="centerY" id="xeh-Eu-dfw"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="details" destination="2Fk-dh-K90" id="W7C-hH-XOl"/>
+                                            <outlet property="login" destination="6le-zj-bPk" id="LET-bc-rvZ"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
