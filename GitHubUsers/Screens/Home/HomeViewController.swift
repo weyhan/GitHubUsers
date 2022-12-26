@@ -30,9 +30,6 @@ class HomeViewController: UIViewController, HomeViewDelegate {
         tableView.dataSource = self
 
         viewModel.delegate = self
-
-        // TODO: Move trigger to footer cell when ready
-        viewModel.loadNewData()
     }
 
 }
@@ -127,8 +124,24 @@ extension HomeViewController: UITableViewDataSource {
 
 }
 
-// MARK: - UITableViewDataSource Extension
+// MARK: - UITableViewDelegate Extension
 
 extension HomeViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 100.0
+    }
+
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "FooterCell") as? FooterTableViewCell else {
+            fatalError("Misconfigured storyboard (Home.storyboard). Missing cell with \"FooterCell\" identifier.")
+        }
+
+        cell.spinner.startAnimating()
+        viewModel.loadNewData()
+
+        return cell
+    }
 
 }

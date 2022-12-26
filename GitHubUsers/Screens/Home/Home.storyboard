@@ -17,12 +17,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="5Y8-57-xnl">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="5Y8-57-xnl">
                                 <rect key="frame" x="0.0" y="103" width="393" height="715"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="NormalCell" id="Sst-9r-CX6" customClass="NormalTableViewCell" customModule="GitHubUsers" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="50" width="393" height="96.333335876464844"/>
+                                        <rect key="frame" x="0.0" y="55.333332061767578" width="393" height="96.333335876464844"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Sst-9r-CX6" id="KFw-Ol-sdz">
                                             <rect key="frame" x="0.0" y="0.0" width="362.66666666666669" height="96.333335876464844"/>
@@ -80,7 +80,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="NoteCell" id="g9Q-dg-oOs" customClass="NoteTableViewCell" customModule="GitHubUsers" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="146.33333587646484" width="393" height="96.333335876464844"/>
+                                        <rect key="frame" x="0.0" y="151.66666793823242" width="393" height="96.333335876464844"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="g9Q-dg-oOs" id="NK4-UE-lSo">
                                             <rect key="frame" x="0.0" y="0.0" width="362.66666666666669" height="96.333335876464844"/>
@@ -143,6 +143,38 @@
                                         <connections>
                                             <outlet property="details" destination="2Fk-dh-K90" id="W7C-hH-XOl"/>
                                             <outlet property="login" destination="6le-zj-bPk" id="LET-bc-rvZ"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="FooterCell" rowHeight="100" id="nzd-6s-nlO" customClass="FooterTableViewCell" customModule="GitHubUsers" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="248.00000381469727" width="393" height="100"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="nzd-6s-nlO" id="wwx-Dt-J4m">
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="100"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RHp-dB-IMH">
+                                                    <rect key="frame" x="0.0" y="0.0" width="393" height="100"/>
+                                                    <subviews>
+                                                        <activityIndicatorView hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="Mt4-aA-BHE">
+                                                            <rect key="frame" x="178" y="31.666666666666671" width="37" height="37"/>
+                                                        </activityIndicatorView>
+                                                    </subviews>
+                                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                    <constraints>
+                                                        <constraint firstItem="Mt4-aA-BHE" firstAttribute="centerY" secondItem="RHp-dB-IMH" secondAttribute="centerY" id="PAB-me-3dF"/>
+                                                        <constraint firstItem="Mt4-aA-BHE" firstAttribute="centerX" secondItem="RHp-dB-IMH" secondAttribute="centerX" id="q81-BT-pqG"/>
+                                                    </constraints>
+                                                </view>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="RHp-dB-IMH" firstAttribute="top" secondItem="wwx-Dt-J4m" secondAttribute="top" id="CbJ-8v-Jjb"/>
+                                                <constraint firstAttribute="trailing" secondItem="RHp-dB-IMH" secondAttribute="trailing" id="F88-Gc-JaQ"/>
+                                                <constraint firstAttribute="bottom" secondItem="RHp-dB-IMH" secondAttribute="bottom" id="Gca-oC-LX1"/>
+                                                <constraint firstItem="RHp-dB-IMH" firstAttribute="leading" secondItem="wwx-Dt-J4m" secondAttribute="leading" id="LNj-6R-MOl"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="spinner" destination="Mt4-aA-BHE" id="egs-Pk-YN8"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
