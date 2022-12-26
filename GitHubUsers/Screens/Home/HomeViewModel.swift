@@ -15,7 +15,7 @@ import Foundation
 protocol HomeViewDelegate: AnyObject {
     func showStatus(text: String)
     func hideStatus()
-    func reloadData()
+    func refreshUI()
 }
 
 /// View model for Home screen.
@@ -31,6 +31,7 @@ class HomeViewModel {
         return GitHubUser.count()
     }
 
+    // MARK: - Cell View Model Methods
     /// Asks the data source for a cell view model for a particular location of the table view.
     func cellViewModel(forRowAt row: Int) -> HomeCellViewModel {
         let fetchRequest = GitHubUser.fetchRequest()
@@ -81,4 +82,71 @@ class HomeViewModel {
         return .normal
     }
 
+    // MARK: - JSON Decoding Methods
+
+    /// Decodes results from GitHub user list API.
+    private func decodeGitHubUsersList(data: Data, lastIndex: Int, coreDataStack: CoreDataStack, completion: @escaping (Result<[GitHubUser], DecodingError>)->()) {
+
+        var row = lastIndex
+        let context = coreDataStack.backgroundContext()
+
+        context.perform {
+            let decoder = JSONDecoderService<[GitHubUser]>(context: context, coreDataStack: coreDataStack)
+
+            let users: [GitHubUser]
+            do {
+                users = try decoder.decode(data: data)
+
+            } catch {
+                completion(.failure(error as! DecodingError))
+                return
+            }
+
+            users.forEach { row += 1; $0.row = Int64(row) }
+            coreDataStack.saveContextAndWait(context)
+
+            completion(.success(users))
+        }
+    }
+
+    private func refreshUI() {
+        DispatchQueue.main.async { [unowned self] in
+            self.delegate?.refreshUI()
+        }
+    }
+
+    /// Load new data from GitHub users list API.
+    ///
+    /// Request for the list of users starting from the next ID after the last user ID cached. Results are JSON decoded
+    /// and cached in persistent store.
+    func loadNewData() {
+        let lastId = GitHubUser.lastId()
+        loadGitHubUsers(afterId: lastId)
+    }
+
+    /// Load data from GitHub user list API.
+    ///
+    /// Request for the list of users starting from the next ID after the given `afterId`.
+    /// - Parameters:
+    ///   - afterId: Request for the list of users starting from the next ID following `afterId`.
+    func loadGitHubUsers(afterId: Int) {
+        let url = GitHubEndpoints.userList(afterId: afterId)
+
+        let dataTask = NetworkDataTask(remoteUrl: url, session: URLSession.shared) { [unowned self] result in
+
+            if case .success(let data) = result {
+                decodeGitHubUsersList(data: data,
+                                      lastIndex: GitHubUser.count() - 1,
+                                      coreDataStack: CoreDataStack.shared) { decodeResult in
+
+                    if case .success(_) = decodeResult {
+                        self.refreshUI()
+                    }
+                }
+            }
+
+        }
+
+        dataTask.resume()
+    }
 }

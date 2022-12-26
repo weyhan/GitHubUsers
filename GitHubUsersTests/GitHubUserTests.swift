@@ -38,7 +38,7 @@ final class GitHubUserTests: XCTestCase {
         let context = coreDataStack.mainContext
 
         let jsonService = JSONDecoderService<[GitHubUser]>(context: context, coreDataStack: coreDataStack)
-        let decoded = jsonService.decode(data: data)
+        let decoded = try? jsonService.decode(data: data)
 
         XCTAssertNotNil(decoded)
         guard let decoded = decoded else {
@@ -113,9 +113,10 @@ final class GitHubUserTests: XCTestCase {
 
         // Decode data in the background.
         context.perform {
-            let decoded = jsonService.decode(data: data)
-
+            let decoded = try? jsonService.decode(data: data)
             XCTAssertNotNil(decoded)
+
+            self.coreDataStack.saveContext(context)
         }
 
         // Wait for 2 seconds for NSManagedObjectContextDidSave notification.
@@ -213,7 +214,7 @@ final class GitHubUserTests: XCTestCase {
         let context = coreDataStack.mainContext
         let jsonService = JSONDecoderService<[GitHubUser]>(context: context, coreDataStack: coreDataStack)
 
-        let decoded = jsonService.decode(data: data)
+        let decoded = try? jsonService.decode(data: data)
 
         XCTAssertNil(decoded, "Decoding with mismatch input and model should produce nil but did not")
     }

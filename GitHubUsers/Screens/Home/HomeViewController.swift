@@ -30,6 +30,9 @@ class HomeViewController: UIViewController, HomeViewDelegate {
         tableView.dataSource = self
 
         viewModel.delegate = self
+
+        // TODO: Move trigger to footer cell when ready
+        viewModel.loadNewData()
     }
 
 }
@@ -39,7 +42,7 @@ class HomeViewController: UIViewController, HomeViewDelegate {
 extension HomeViewController {
 
     /// Reloads the rows and sections of the table view.
-    func reloadData() {
+    func refreshUI() {
         tableView.reloadData()
     }
 

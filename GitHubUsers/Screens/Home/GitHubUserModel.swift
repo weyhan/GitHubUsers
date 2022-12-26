@@ -99,6 +99,8 @@ class GitHubUser: NSManagedObject, Decodable {
 extension GitHubUser: Identifiable { }
 
 extension GitHubUser {
+
+    /// Retrieve the total number of cached GitHub users records.
     static func count() -> Int {
         let context = CoreDataStack.shared.mainContext
 
@@ -108,6 +110,20 @@ extension GitHubUser {
         let count = try? context.count(for: fetchRequest)
 
         return count ?? 0
+    }
+
+    /// Retrieve the ID of the last GitHub user cached.
+    static func lastId() -> Int {
+        let request = GitHubUser.fetchRequest()
+        request.predicate = NSPredicate(format: "id == max(id)")
+
+        let result = try? CoreDataStack.shared.mainContext.fetch(request)
+
+        guard let lastId = result?.first?.id else {
+            return -1
+        }
+
+        return Int(lastId)
     }
 }
 

@@ -12,6 +12,7 @@ import CoreData
 /// Mocks CoreDataStack for testing
 class MockCoreDataStack: KodecoCoreDataStack, CoreDataStackProtocol {
 
+    /// Initializes in-memory persistent store.
     override init(modelName: String) {
         super.init(modelName: modelName)
 
@@ -30,6 +31,53 @@ class MockCoreDataStack: KodecoCoreDataStack, CoreDataStackProtocol {
         }
 
         storeContainer = container
+    }
+
+    /// Save main context
+    ///
+    /// This methods is blocking.
+    public func saveContextAndWait() {
+        saveContextAndWait(mainContext)
+    }
+
+    /// Save given context.
+    ///
+    /// If context is derived context, also save main context after saving derived context. This methods
+    /// is blocking.
+    /// - Parameters:
+    ///   - context: The context use to save.
+    public func saveContextAndWait(_ context: NSManagedObjectContext) {
+        if context != mainContext {
+            saveDerivedContextAndWait(context)
+            return
+        }
+
+        context.performAndWait {
+            do {
+                try context.save()
+
+            } catch let error as NSError {
+                fatalError("Unresolved error \(error), \(error.userInfo)")
+            }
+        }
+    }
+
+    /// Save given derived context.
+    ///
+    /// Save derived context followed by saving main context. This methods is blocking.
+    /// - Parameters:
+    ///   - context: The context use to save.
+    public func saveDerivedContextAndWait(_ context: NSManagedObjectContext) {
+        context.performAndWait {
+            do {
+                try context.save()
+
+            } catch let error as NSError {
+                fatalError("Unresolved error \(error), \(error.userInfo)")
+            }
+
+            self.saveContextAndWait(self.mainContext)
+        }
     }
 
 }

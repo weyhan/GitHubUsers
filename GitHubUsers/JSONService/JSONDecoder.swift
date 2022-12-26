@@ -56,23 +56,13 @@ class JSONDecoderService<T> where T: Decodable {
     /// Generic JSON decoding method
     ///
     /// This decoder will decode into any CoreData model that is configured during the initialization for this instance
-    /// of JSONDecoderService class. The data is saved in CoreData if the decoding is successful.
+    /// of JSONDecoderService class. This method throws if the decoding encounters errors.
     /// - Parameters:
     ///   - data: The JSON data to decode.
     /// - Returns: The decoded model instance or nil if decoding or saving to CoreData failed.
-    func decode(data: Data) -> T? {
-        let decoded: T
-        do {
-            decoded = try decoderWithSnakeCaseConvert.decode(T.self, from: data)
-            coreDataStack.saveContext(context)
-
-        } catch {
-            print(String(describing: error))
-            return nil
-        }
-
-        return decoded
+    func decode(data: Data) throws -> T {
+        return try decoderWithSnakeCaseConvert.decode(T.self, from: data)
     }
-    
+
 }
 
