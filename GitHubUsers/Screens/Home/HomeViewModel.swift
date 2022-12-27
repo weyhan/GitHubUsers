@@ -28,12 +28,71 @@ class HomeViewModel {
 
     /// The number of elements of users record cached in persistent store.
     var count: Int {
+        if isSearchMode {
+            let count = searchResult?.count ?? 0
+            showStatus(text: "Matched \(count) user(s)")
+            return count
+        }
+
         return GitHubUser.count()
     }
 
+    var isSearchMode = false
+    var searchResult: [GitHubUser]?
+
+    private var footerCellViewModel = FooterCellViewModel()
+
+    // MARK: - UI Delegates Calls
+
+    /// Method to refresh UI.
+    ///
+    /// - Note: Call to UI delegate is always called on the main thread.
+    private func refreshUI() {
+        DispatchQueue.main.async { [unowned self] in
+            self.delegate?.refreshUI()
+        }
+    }
+
+    /// Method to show status bar with certain text.
+    ///
+    /// - Note: Call to UI delegate is always called on the main thread.
+    private func showStatus(text: String) {
+        DispatchQueue.main.async { [unowned self] in
+            self.delegate?.showStatus(text: text)
+        }
+    }
+
+    /// Method to dismiss status bar.
+    ///
+    /// - Note: Call to UI delegate is always called on the main thread.
+    private func hideStatus() {
+        DispatchQueue.main.async { [unowned self] in
+            self.delegate?.hideStatus()
+        }
+    }
+
     // MARK: - Cell View Model Methods
+
     /// Asks the data source for a cell view model for a particular location of the table view.
     func cellViewModel(forRowAt row: Int) -> HomeCellViewModel {
+        if isSearchMode {
+            return cellViewModelSearchMode(row)
+        }
+
+        return cellViewModelNormalMode(row)
+    }
+
+    /// Get normal view model for search mode.
+    private func cellViewModelSearchMode(_ row: Int) -> HomeCellViewModel {
+        guard let user = searchResult?[row] else {
+            fatalError("Search result don't match count!")
+        }
+
+        return NormalCellViewModel(login: user.login, details: user.type)
+    }
+
+    /// Get cell view model for normal mode.
+    private func cellViewModelNormalMode(_ row: Int) -> HomeCellViewModel {
         let fetchRequest = GitHubUser.fetchRequest()
         let predicate = NSPredicate(format: "row == \(row)")
 
@@ -47,6 +106,11 @@ class HomeViewModel {
         }
 
         return homeCellViewModel
+    }
+
+    /// Get footer cell view model.
+    func cellViewModelForFooter() -> FooterCellViewModel {
+        return footerCellViewModel
     }
 
     /// Make view model for cell.
@@ -109,17 +173,14 @@ class HomeViewModel {
         }
     }
 
-    private func refreshUI() {
-        DispatchQueue.main.async { [unowned self] in
-            self.delegate?.refreshUI()
-        }
-    }
+    // MARK: - Network Tasks
 
     /// Load new data from GitHub users list API.
     ///
     /// Request for the list of users starting from the next ID after the last user ID cached. Results are JSON decoded
     /// and cached in persistent store.
     func loadNewData() {
+        guard isSearchMode == false else { return }
         let lastId = GitHubUser.lastId()
         loadGitHubUsers(afterId: lastId)
     }
@@ -148,5 +209,55 @@ class HomeViewModel {
         }
 
         dataTask.resume()
+    }
+}
+
+extension HomeViewModel {
+
+    /// Turn on or off search mode.
+    ///
+    /// Search mode is determined by the `forSearchText` argument. Search mode will be turned on
+    /// if `forSearchText` is not `nil` and not empty.
+    /// - Parameters:
+    ///   - forSearchText: Text use to filter result for the user search.
+    func filterUser(forSearchText text: String?) {
+        if let text = text, !text.isEmpty {
+            enterSearchMode(text)
+
+        } else {
+            exitSearchMode()
+        }
+    }
+
+    /// Cleanups for exit search mode
+    private func exitSearchMode() {
+        /// The search controller tend to call the updateSearchResults method multiple times
+        /// when cancelling the search. Because the exit search mode cleanups refresh the UI
+        /// doing multiple cleanups may cause the UI to be less smooth.
+
+        // Check if in search mode before proceeding with cleanups.
+        guard isSearchMode else { return }
+
+        isSearchMode = false
+        footerCellViewModel.isSearchMode = false
+        hideStatus()
+        delegate?.refreshUI()
+
+        return
+    }
+
+    /// Setup for search mode.
+    ///
+    /// - Parameters:
+    ///   - text: Text use to filter result for the user search.
+    private func enterSearchMode(_ text: String) {
+        let request = GitHubUser.fetchRequest()
+
+        request.predicate = NSPredicate(format: "login CONTAINS[cd] %@", argumentArray: [text])
+        searchResult = try? CoreDataStack.shared.mainContext.fetch(request)
+
+        isSearchMode = true
+        footerCellViewModel.isSearchMode = true
+        delegate?.refreshUI()
     }
 }

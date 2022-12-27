@@ -21,6 +21,8 @@ class HomeViewController: UIViewController, HomeViewDelegate {
 
     private let viewModel = HomeViewModel()
 
+    private let searchController = UISearchController(searchResultsController: nil)
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -30,6 +32,13 @@ class HomeViewController: UIViewController, HomeViewDelegate {
         tableView.dataSource = self
 
         viewModel.delegate = self
+
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search Users"
+        searchController.searchBar.autocorrectionType = .no
+        searchController.searchBar.autocapitalizationType = .none
+        navigationItem.searchController = searchController
     }
 
 }
@@ -53,14 +62,21 @@ extension HomeViewController {
     /// - Parameters:
     ///   - text: The text to display on the status bar.
     func showStatus(text: String) {
-        let transform = statusView.transform.translatedBy(x: 0, y: 44)
+        statusLabel.text = text
+
+        // Don't move statusView if the statusView is already on screen.
+        guard statusContainerView.isHidden == true else { return }
 
         statusContainerView.isHidden = false
 
-        var inset = tableView.contentInset
-        inset.top += 44
+        // Use the distance between the current location and the destination for
+        // the move transform instead of a hardcoded number. This will prevent
+        // runaway move from unintentional multiple calls to this method.
+        let moveYBy = statusView.frame.minY.distance(to: 0)
+        let transform = statusView.transform.translatedBy(x: 0, y: moveYBy)
 
-        statusLabel.text = text
+        var inset = tableView.contentInset
+        inset.top = 44
 
         let animations: ()->() = {
             self.statusView.transform = transform
@@ -76,9 +92,18 @@ extension HomeViewController {
 
     /// Slide away the status bar.
     func hideStatus() {
-        let transform = statusView.transform.translatedBy(x: 0, y: -44)
+        guard statusContainerView.isHidden == false else { return }
+
+        // Use the distance between the current location and the destination for
+        // the move transform instead of a hardcoded number. This will prevent
+        // runaway move from unintentional multiple calls to this method.
+        let moveYBy = statusView.frame.minY.distance(to: -44)
+        let transform = statusView.transform.translatedBy(x: 0, y: moveYBy)
+
+        // Reset tableView inset to 0 if the top value is less than 44.0. Similar
+        // to the above, is to prevent multiple calls to this method.
         var inset = tableView.contentInset
-        inset.top -= 44
+        inset.top = inset.top > 44 ? inset.top - 44 : 0
 
         let animations: ()->() = {
             self.statusView.transform = transform
@@ -128,20 +153,39 @@ extension HomeViewController: UITableViewDataSource {
 
 extension HomeViewController: UITableViewDelegate {
 
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 100.0
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
 
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "FooterCell") as? FooterTableViewCell else {
-            fatalError("Misconfigured storyboard (Home.storyboard). Missing cell with \"FooterCell\" identifier.")
+        let footerViewModel = viewModel.cellViewModelForFooter()
+        let reuseIdentifier = footerViewModel.reuseIdentifier
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier)
+
+        // Setup cell with view model.
+        guard let footerCell = cell as? HomeFooterTableViewCell else {
+            fatalError("Home UITableView misconfigured.")
         }
 
-        cell.spinner.startAnimating()
+        footerCell.setup(withViewModel: footerViewModel)
+
         viewModel.loadNewData()
 
         return cell
+    }
+
+}
+
+// MARK: - Search User Extension
+extension HomeViewController: UISearchResultsUpdating {
+
+    func updateSearchResults(for searchController: UISearchController) {
+        viewModel.filterUser(forSearchText: searchController.searchBar.text)
     }
 
 }

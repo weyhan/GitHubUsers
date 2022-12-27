@@ -7,8 +7,27 @@
 
 import UIKit
 
-class FooterTableViewCell: UITableViewCell {
+class FooterTableViewCell: UITableViewCell, HomeFooterTableViewCell {
+
+    /// View model for the NoteCellViewModel
+    var viewModel: FooterCellViewModel!
 
     @IBOutlet var spinner: UIActivityIndicatorView!
-    
+
+    /// Setup footer cell with a view model.
+    func setup(withViewModel viewModel: HomeFooterCellViewModel) {
+        guard let viewModel = viewModel as? FooterCellViewModel else {
+            fatalError("viewModel is not FooterCellViewModel")
+        }
+
+        self.viewModel = viewModel
+
+        if !viewModel.isSearchMode {
+            spinner.startAnimating()
+
+        } else {
+            spinner.stopAnimating()
+        }
+    }
+
 }

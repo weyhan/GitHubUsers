@@ -14,3 +14,8 @@ protocol HomeCellViewModel {
 
     var reuseIdentifier: String { get }
 }
+
+/// Properties and methods for managing and configuring the footer cell.
+protocol HomeFooterCellViewModel {
+    var reuseIdentifier: String { get }
+}
