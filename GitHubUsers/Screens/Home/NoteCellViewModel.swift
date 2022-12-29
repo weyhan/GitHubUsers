@@ -10,16 +10,8 @@ import Foundation
 /// The view model for note cells.
 ///
 /// The note cell has a note icon to indicate that the user have an attached note on record.
-class NoteCellViewModel: HomeCellViewModel {
+class NoteCellViewModel: HomeCellViewModel, HomeCellViewModelProtocol {
 
     let reuseIdentifier = "NoteCell"
-
-    let login: String
-    let details: String
-
-    init(login: String, details: String) {
-        self.login = login
-        self.details = details
-    }
 
 }

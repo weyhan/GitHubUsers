@@ -139,7 +139,7 @@ extension HomeViewController: UITableViewDataSource {
 
         // Setup cell with view model.
         guard let homeTableViewCell = cell as? HomeTableViewCell else {
-            fatalError("Home UITableView misconfigured.")
+            fatalError("Home UITableView is misconfigured.")
         }
 
         homeTableViewCell.setup(withViewModel: cellViewModel)

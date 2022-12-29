@@ -15,7 +15,7 @@ class FooterTableViewCell: UITableViewCell, HomeFooterTableViewCell {
     @IBOutlet var spinner: UIActivityIndicatorView!
 
     /// Setup footer cell with a view model.
-    func setup(withViewModel viewModel: HomeFooterCellViewModel) {
+    func setup(withViewModel viewModel: HomeFooterCellViewModelProtocol) {
         guard let viewModel = viewModel as? FooterCellViewModel else {
             fatalError("viewModel is not FooterCellViewModel")
         }

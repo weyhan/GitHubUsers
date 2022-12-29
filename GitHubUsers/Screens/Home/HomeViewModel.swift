@@ -74,7 +74,7 @@ class HomeViewModel {
     // MARK: - Cell View Model Methods
 
     /// Asks the data source for a cell view model for a particular location of the table view.
-    func cellViewModel(forRowAt row: Int) -> HomeCellViewModel {
+    func cellViewModel(forRowAt row: Int) -> HomeCellViewModelProtocol {
         if isSearchMode {
             return cellViewModelSearchMode(row)
         }
@@ -83,16 +83,16 @@ class HomeViewModel {
     }
 
     /// Get normal view model for search mode.
-    private func cellViewModelSearchMode(_ row: Int) -> HomeCellViewModel {
+    private func cellViewModelSearchMode(_ row: Int) -> HomeCellViewModelProtocol {
         guard let user = searchResult?[row] else {
             fatalError("Search result don't match count!")
         }
 
-        return NormalCellViewModel(login: user.login, details: user.type)
+        return NormalCellViewModel(id: user.id, login: user.login, details: user.type, avatarUrl: user.avatarUrl)
     }
 
     /// Get cell view model for normal mode.
-    private func cellViewModelNormalMode(_ row: Int) -> HomeCellViewModel {
+    private func cellViewModelNormalMode(_ row: Int) -> HomeCellViewModelProtocol {
         let fetchRequest = GitHubUser.fetchRequest()
         let predicate = NSPredicate(format: "row == \(row)")
 
@@ -102,7 +102,7 @@ class HomeViewModel {
         guard let user = try? CoreDataStack.shared.mainContext.fetch(fetchRequest).first,
               let homeCellViewModel = makeCellViewModel(row, user: user) else {
 
-            return NormalCellViewModel(login: "-", details: "-")
+            return NormalCellViewModel(id: -1, login: "-", details: "-", avatarUrl: "")
         }
 
         return homeCellViewModel
@@ -114,14 +114,14 @@ class HomeViewModel {
     }
 
     /// Make view model for cell.
-    private func makeCellViewModel(_ row: Int, user: GitHubUser) -> HomeCellViewModel? {
+    private func makeCellViewModel(_ row: Int, user: GitHubUser) -> HomeCellViewModelProtocol? {
 
         switch viewModelType(forRowAt: row) {
         case .normal:
-            return NormalCellViewModel(login: user.login, details: user.type)
+            return NormalCellViewModel(id: user.id, login: user.login, details: user.type, avatarUrl: user.avatarUrl)
 
         case .note:
-            return NoteCellViewModel(login: user.login, details: user.type)
+            return NoteCellViewModel(id: user.id, login: user.login, details: user.type, avatarUrl: user.avatarUrl)
 
         default:
             return nil
@@ -195,6 +195,8 @@ class HomeViewModel {
 
         let dataTask = NetworkDataTask(remoteUrl: url, session: URLSession.shared) { [unowned self] result in
 
+            NetworkQueue.shared.release()
+
             if case .success(let data) = result {
                 decodeGitHubUsersList(data: data,
                                       lastIndex: GitHubUser.count() - 1,
@@ -208,7 +210,9 @@ class HomeViewModel {
 
         }
 
-        dataTask.resume()
+        let queue = NetworkQueue.shared
+        queue.enqueue(networkJob: dataTask)
+        queue.resume()
     }
 }
 

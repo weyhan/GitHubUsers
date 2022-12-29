@@ -75,6 +75,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="avatarImage" destination="XeP-MR-8Fs" id="Eav-0l-9QY"/>
                                             <outlet property="details" destination="NsM-z4-2DZ" id="kcP-IM-qhK"/>
                                             <outlet property="login" destination="pzj-lP-sId" id="jsS-Z8-XfI"/>
                                         </connections>
@@ -141,6 +142,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="avatarImage" destination="Ol3-ZQ-bw8" id="9su-U8-8Vg"/>
                                             <outlet property="details" destination="2Fk-dh-K90" id="W7C-hH-XOl"/>
                                             <outlet property="login" destination="6le-zj-bPk" id="LET-bc-rvZ"/>
                                         </connections>

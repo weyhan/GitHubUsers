@@ -11,7 +11,7 @@ import Foundation
 ///
 /// The footer cell is the last cell after the last loaded user. The footer cell displays an activity indicator and
 /// triggers new data loading on normal mode.
-class FooterCellViewModel: HomeFooterCellViewModel {
+class FooterCellViewModel: HomeFooterCellViewModelProtocol {
 
     var reuseIdentifier = "FooterCell"
 

@@ -29,12 +29,10 @@ final public class NetworkQueue: NetworkQueueDelegate {
     private init() { }
 
     /// Queue state code
-    ///
-    /// Queue can be in the following state:
-    /// - `started`: Queue is processing queued network items.
-    /// - `stopped`: Queue is not processing queued network items.
     private enum StateCode {
+        /// Queue is processing queued network items.
         case started
+        /// Queue is not processing queued network items and/or queue is empty.
         case stopped
     }
 

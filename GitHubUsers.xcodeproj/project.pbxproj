@@ -11,6 +11,8 @@
 		6F1632722950B84C00880B81 /* NetworkTasksSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1632712950B84C00880B81 /* NetworkTasksSupport.swift */; };
 		6F2BD56B295A0A710053B66A /* FooterTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2BD56A295A0A710053B66A /* FooterTableViewCell.swift */; };
 		6F2BD56D295AF7530053B66A /* FooterCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2BD56C295AF7530053B66A /* FooterCellViewModel.swift */; };
+		6F2BD595295C73CA0053B66A /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2BD594295C73CA0053B66A /* FileManager.swift */; };
+		6F2BD597295D71700053B66A /* NetworkDownloadTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2BD596295D71700053B66A /* NetworkDownloadTask.swift */; };
 		6F6547C529583FBD0055A8F7 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6547C429583FBD0055A8F7 /* HomeViewModel.swift */; };
 		6F6547C729585E7A0055A8F7 /* NormalCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6547C629585E7A0055A8F7 /* NormalCellViewModel.swift */; };
 		6F6547C929585E8B0055A8F7 /* NoteCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6547C829585E8B0055A8F7 /* NoteCellViewModel.swift */; };
@@ -57,6 +59,8 @@
 		6F1632712950B84C00880B81 /* NetworkTasksSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTasksSupport.swift; sourceTree = "<group>"; };
 		6F2BD56A295A0A710053B66A /* FooterTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterTableViewCell.swift; sourceTree = "<group>"; };
 		6F2BD56C295AF7530053B66A /* FooterCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterCellViewModel.swift; sourceTree = "<group>"; };
+		6F2BD594295C73CA0053B66A /* FileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
+		6F2BD596295D71700053B66A /* NetworkDownloadTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkDownloadTask.swift; sourceTree = "<group>"; };
 		6F6547C429583FBD0055A8F7 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		6F6547C629585E7A0055A8F7 /* NormalCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NormalCellViewModel.swift; sourceTree = "<group>"; };
 		6F6547C829585E8B0055A8F7 /* NoteCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteCellViewModel.swift; sourceTree = "<group>"; };
@@ -114,6 +118,7 @@
 			children = (
 				6F1632712950B84C00880B81 /* NetworkTasksSupport.swift */,
 				6F16326F2950B82200880B81 /* NetworkDataTask.swift */,
+				6F2BD596295D71700053B66A /* NetworkDownloadTask.swift */,
 				6F6547D429596C720055A8F7 /* GitHubEndpoints.swift */,
 			);
 			path = NetworkTasks;
@@ -208,6 +213,7 @@
 			isa = PBXGroup;
 			children = (
 				6F908768294DCB3C006E0B75 /* UIImage.swift */,
+				6F2BD594295C73CA0053B66A /* FileManager.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -369,6 +375,7 @@
 				6F6547D12958BD0B0055A8F7 /* HomeCellViewModel.swift in Sources */,
 				6F6547CD29586CAD0055A8F7 /* NoteTableViewCell.swift in Sources */,
 				6F6547D32958BD550055A8F7 /* HomeTableViewCell.swift in Sources */,
+				6F2BD595295C73CA0053B66A /* FileManager.swift in Sources */,
 				6FD8E5012956343E00BEC5C0 /* CoreDataStack.swift in Sources */,
 				6F1632702950B82200880B81 /* NetworkDataTask.swift in Sources */,
 				6F6547C729585E7A0055A8F7 /* NormalCellViewModel.swift in Sources */,
@@ -377,6 +384,7 @@
 				6F6547D529596C720055A8F7 /* GitHubEndpoints.swift in Sources */,
 				6F7416DF294B51C0009B5328 /* AppDelegate.swift in Sources */,
 				6F6547C929585E8B0055A8F7 /* NoteCellViewModel.swift in Sources */,
+				6F2BD597295D71700053B66A /* NetworkDownloadTask.swift in Sources */,
 				6F7416E1294B51C0009B5328 /* SceneDelegate.swift in Sources */,
 				6F6547C529583FBD0055A8F7 /* HomeViewModel.swift in Sources */,
 				6F6547CB29586C7F0055A8F7 /* NormalTableViewCell.swift in Sources */,
