@@ -17,7 +17,7 @@ public enum FileExist {
     case notExist
 }
 
-/// URL to the cache directory in the app sandbox.
+/// `URL` to the cache directory in the app sandbox.
 public var cacheDirectoryUrl: URL {
     let urls = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)
     let url = urls[0]
@@ -44,6 +44,11 @@ public func makeTemporaryFileUrl() -> URL {
     return tmpUrl
 }
 
+/// Create directory at `URL`.
+///
+/// If `directory` exist, this function will do nothing. This function re-throw all errors thrown from the `FileManager` instance.
+/// - Parameters:
+///   - directory: `URL` to the directory to be created.
 public func create(directory: URL) throws {
     if fileExist(url: directory) == .notExist {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
@@ -52,8 +57,14 @@ public func create(directory: URL) throws {
 
 /// Check if file or directory exist.
 ///
+/// This functions returns one of the `FileExist` status. See `FileExist` enum for more information.
+///
+/// - Note: Attempting to predicate behavior based on the current state of the file system or a particular file on the file system
+/// is not recommended. Doing so can cause odd behavior or race conditions. Usage for this function should be limited to getting
+/// the filesystem states that are not obtainable via other `FileManager` operations.
 /// - Parameters:
 ///   - url: `URL` to the file or directory to check if exist.
+/// - Returns: `FileExist` status
 public func fileExist(url: URL) -> FileExist {
     var isDirectory: ObjCBool = false
     let exist = FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory)
@@ -71,11 +82,15 @@ public func fileExist(url: URL) -> FileExist {
 
 /// Safer move file or directory from source to destination.
 ///
-/// Move file operation will attempt to overwrite the destination file if exist unless the destination is a directory. This function
-/// will throw if errors occurs during the move operation that the move function could not determine the corrective action.
+/// Move file operation will attempt to overwrite the destination file if exist. If the parent directory at the destination does not exist,
+/// this function will create it before moving the source file(s). If the destination is a directory this function will not overwritten the
+/// directory unless the `overwriteDirectory` is set to true. In the case where the destination is a directory and the
+/// `overwriteDirectory` is set to false, the function throws and error. This function will throw if errors occurs during the move
+/// operation that the move function could not determine the corrective action.
 /// - Parameters:
-///   - from: URL to the source file or directory.
-///   - to: URL to the destination file or directory.
+///   - from: `URL` to the source file or directory.
+///   - to: `URL` to the destination file or directory.
+///   - overwriteDirectory: `Bool` to allow overwriting directory if set to true.
 public func move(from source: URL, to destination: URL, overwriteDirectory: Bool = false) throws {
 
     let fileManager = FileManager.default
@@ -101,7 +116,7 @@ public func move(from source: URL, to destination: URL, overwriteDirectory: Bool
     // - Makes the move operation atomic where if the move failed, the original file can
     //   be restored.
     // - Moving the destination file out of the way before the actual move has lower chance
-    //   of failure compared to attemp to overwrite on the move operation.
+    //   of failure compared to attempt to overwrite on the move operation.
     do {
         try fileManager.moveItem(at: destination, to: trashUrl)
 
@@ -123,7 +138,7 @@ public func move(from source: URL, to destination: URL, overwriteDirectory: Bool
         // Move operation has failed. Restore original file if any.
         // At this point, the error to restore the file is ignored because it can be:
         // - The destination file never existed before the move.
-        // - There is no good recovery stratergy at this point.
+        // - There is no good recovery strategy at this point.
         try? fileManager.moveItem(at: trashUrl, to: destination)
 
         throw error
@@ -135,10 +150,11 @@ public func move(from source: URL, to destination: URL, overwriteDirectory: Bool
 
 /// Safer remove file or directory.
 ///
-/// The file or directory is move to a `tmp` directory in the app sandbox before carrying out the remove operation.
-/// If the remove operation failed, the file or directory is left in the `tmp` directory and the operation is deem successful.
-/// This function will throw if errors occurs during the remove operation that the remove function could not determine the
-/// corrective action.
+/// If the given `url` is to a resource that does not exist on the filesystem, this function will do nothing. Otherwise the file
+/// or directory is move to a `tmp` directory in the app sandbox before carrying out the remove operation. If the remove
+/// operation failed, the file or directory is left in the `tmp` directory and the operation is deem successful. This function
+/// will throw if errors occurs during the remove operation that the remove function could not determine the corrective
+/// action.
 /// - Parameters:
 ///   - url: URL to the file or directory to be removed.
 public func remove(url: URL) throws {

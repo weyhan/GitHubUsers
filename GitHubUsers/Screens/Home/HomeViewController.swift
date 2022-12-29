@@ -138,7 +138,7 @@ extension HomeViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
 
         // Setup cell with view model.
-        guard let homeTableViewCell = cell as? HomeTableViewCell else {
+        guard let homeTableViewCell = cell as? HomeTableViewCellProtocol else {
             fatalError("Home UITableView is misconfigured.")
         }
 
@@ -168,7 +168,7 @@ extension HomeViewController: UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier)
 
         // Setup cell with view model.
-        guard let footerCell = cell as? HomeFooterTableViewCell else {
+        guard let footerCell = cell as? HomeFooterTableViewCellProtocol else {
             fatalError("Home UITableView misconfigured.")
         }
 

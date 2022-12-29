@@ -7,7 +7,7 @@
 
 import UIKit
 
-class FooterTableViewCell: UITableViewCell, HomeFooterTableViewCell {
+class FooterTableViewCell: UITableViewCell, HomeFooterTableViewCellProtocol {
 
     /// View model for the NoteCellViewModel
     var viewModel: FooterCellViewModel!

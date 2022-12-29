@@ -42,8 +42,13 @@ class NetworkDataTask: NetworkQueueable {
         }
     }
 
-    /// Start network data task
+    /// Start network data task.
     func resume() {
         task.resume()
+    }
+
+    /// Cancel network data task.
+    func cancel() {
+        task.cancel()
     }
 }

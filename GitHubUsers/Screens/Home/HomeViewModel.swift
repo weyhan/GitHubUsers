@@ -88,7 +88,7 @@ class HomeViewModel {
             fatalError("Search result don't match count!")
         }
 
-        return NormalCellViewModel(id: user.id, login: user.login, details: user.type, avatarUrl: user.avatarUrl)
+        return NormalCellViewModel(id: user.id, login: user.login, details: user.type, avatarUrl: user.avatarUrl, row: user.row)
     }
 
     /// Get cell view model for normal mode.
@@ -102,7 +102,7 @@ class HomeViewModel {
         guard let user = try? CoreDataStack.shared.mainContext.fetch(fetchRequest).first,
               let homeCellViewModel = makeCellViewModel(row, user: user) else {
 
-            return NormalCellViewModel(id: -1, login: "-", details: "-", avatarUrl: "")
+            return NormalCellViewModel(id: -1, login: "-", details: "-", avatarUrl: "", row: -1)
         }
 
         return homeCellViewModel
@@ -118,10 +118,10 @@ class HomeViewModel {
 
         switch viewModelType(forRowAt: row) {
         case .normal:
-            return NormalCellViewModel(id: user.id, login: user.login, details: user.type, avatarUrl: user.avatarUrl)
+            return NormalCellViewModel(id: user.id, login: user.login, details: user.type, avatarUrl: user.avatarUrl, row: user.row)
 
         case .note:
-            return NoteCellViewModel(id: user.id, login: user.login, details: user.type, avatarUrl: user.avatarUrl)
+            return NoteCellViewModel(id: user.id, login: user.login, details: user.type, avatarUrl: user.avatarUrl, row: user.row)
 
         default:
             return nil
@@ -245,7 +245,7 @@ extension HomeViewModel {
         isSearchMode = false
         footerCellViewModel.isSearchMode = false
         hideStatus()
-        delegate?.refreshUI()
+        refreshUI()
 
         return
     }
@@ -262,6 +262,6 @@ extension HomeViewModel {
 
         isSearchMode = true
         footerCellViewModel.isSearchMode = true
-        delegate?.refreshUI()
+        refreshUI()
     }
 }

@@ -26,13 +26,13 @@ struct Profile: View {
 
 struct Header: View {
     @State private var backgroundColor: Color = .clear
-    @State private var profileImage = UIImage(named: "DefaultProfileImage")!
+    @State private var avatarImage = AppConstants.defaultAvatarImage
 
     var body: some View {
         ZStack {
             backgroundColor
                 .ignoresSafeArea()
-            Image(uiImage: profileImage)
+            Image(uiImage: avatarImage)
                 .resizable()
                 .scaledToFit()
                 .frame(height: 120)
@@ -42,7 +42,7 @@ struct Header: View {
     }
 
     private func setBackgroundColor() {
-        backgroundColor = Color(profileImage.averageColor ?? .clear)
+        backgroundColor = Color(avatarImage.averageColor ?? .clear)
     }
 }
 

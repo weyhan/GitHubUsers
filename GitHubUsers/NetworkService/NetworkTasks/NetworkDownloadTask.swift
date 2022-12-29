@@ -51,8 +51,13 @@ class NetworkDownloadTask: NetworkQueueable {
         }
     }
 
-    /// Start network download task
+    /// Start network download task.
     func resume() {
         task.resume()
+    }
+
+    /// Cancel network download task.
+    func cancel() {
+        task.cancel()
     }
 }

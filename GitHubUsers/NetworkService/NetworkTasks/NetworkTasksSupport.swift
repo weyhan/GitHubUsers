@@ -41,8 +41,7 @@ enum NetworkError: Error {
 /// Maps error code from NSURLSession suit to internal error code.
 ///
 /// Errors are grouped when it make sense in the app level but could also be mapped one to one with an internal
-/// error code. **unspecifiedError** is the catch all group that on the app level could not handle or have not been
-/// considered to handle at this point. This mapping will grow as needed.
+/// error code. This mapping will grow as needed.
 fileprivate func errorCodeMapping(code: Int) -> NetworkError {
     switch code {
     case NSURLErrorCancelled:

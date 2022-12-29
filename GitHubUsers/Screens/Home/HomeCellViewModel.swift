@@ -16,10 +16,14 @@ protocol HomeCellViewModelProtocol {
 
     var reuseIdentifier: String { get }
 
-    var delegate: HomeTableViewCell! { get set }
+    var delegate: HomeTableViewCellProtocol! { get set }
+
+    var isAvatarColorInverted: Bool { get }
 
     func downloadAvatarImage()
     func loadAvatarImageData() -> Data?
+
+    func prepareForReuse()
 }
 
 /// Properties and methods for managing and configuring the footer cell.
@@ -33,21 +37,38 @@ class HomeCellViewModel {
     let login: String
     let details: String
     let avatarUrl: String
+    let row: Int
 
-    var usersPath = "users"
-    var avatarPath = "avatar"
-    var avatarFilename = "avatar"
+    var delegate: HomeTableViewCellProtocol!
 
-    var delegate: HomeTableViewCell!
+    private let usersPath = "users"
+    private let avatarPath = "avatar"
+    private let avatarFilename = "avatar"
 
-    init(id: Int64, login: String, details: String, avatarUrl: String) {
+    private var fileDownloadTask: NetworkDownloadTask? = nil
+
+    /// Initializes view model.
+    init(id: Int64, login: String, details: String, avatarUrl: String, row: Int64) {
         self.id = Int(id)
         self.login = login
         self.details = details
         self.avatarUrl = avatarUrl
+        self.row = Int(row)
     }
 
+    /// Boolean to indicate if the avatar image color should be inverted.
+    ///
+    /// Decide if row should be inverted based on `row` and `invertedRowDistance`.
+    var isAvatarColorInverted: Bool {
+        // Normalized by +1 to row (row starts at 0 instead of 1).
+        (row + 1) % AppConstants.invertedRowDistance == 0
+    }
 
+    /// `URL` to the cached avatar image file.
+    ///
+    /// The `URL` is constructed based on convention `<cache dir>/user/<id>/avatar/avatar.image`.
+    /// - Parameters:
+    ///   - forId: The ID of the avatar image's owner.
     func avatarImageFileUrl(forId id: Int) -> URL {
         cacheDirectoryUrl
             .appendingPathComponent(usersPath, conformingTo: .directory)
@@ -57,6 +78,7 @@ class HomeCellViewModel {
             .appendingPathExtension("image")
     }
 
+    /// Setup and queue network download task for downloading avatar image.
     func downloadAvatarImage() {
         guard let url = URL(string: avatarUrl) else {
             return
@@ -64,12 +86,12 @@ class HomeCellViewModel {
 
         let cacheFileUrl = avatarImageFileUrl(forId: id)
 
-        let downloader = NetworkDownloadTask(remoteUrl: url, localFileUrl: cacheFileUrl, session: URLSession.shared) { [unowned self] result in
+        let fileDownloadTask = NetworkDownloadTask(remoteUrl: url, localFileUrl: cacheFileUrl, session: URLSession.shared) { [weak self] result in
             NetworkQueue.shared.release()
 
             switch result {
             case .success:
-                updateAvatar()
+                self?.updateAvatar()
                 break
 
             case .failure(_):
@@ -77,18 +99,31 @@ class HomeCellViewModel {
             }
         }
 
+        self.fileDownloadTask = fileDownloadTask
+
         let queue = NetworkQueue.shared
-        queue.enqueue(networkJob: downloader)
+        queue.enqueue(networkJob: fileDownloadTask)
         queue.resume()
     }
 
+    /// Method to update avatar image after avatar image is downloaded.
+    ///
+    /// - Note: Call to UI delegate is always called on the main thread.
     func updateAvatar() {
-        DispatchQueue.main.async { [unowned self] in
-            delegate.updateAvatar()
+        DispatchQueue.main.async { [weak self] in
+            self?.delegate.updateAvatar()
         }
     }
 
+    /// Load avatar image into `Data` from file.
     func loadAvatarImageData() -> Data? {
         return try? Data(contentsOf: avatarImageFileUrl(forId: id))
+    }
+
+    /// Release view model when associated cell is reused for another row.
+    func prepareForReuse() {
+        fileDownloadTask?.cancel()
+        fileDownloadTask = nil
+        delegate = nil
     }
 }

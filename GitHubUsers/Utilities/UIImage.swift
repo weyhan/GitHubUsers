@@ -9,7 +9,9 @@ import UIKit
 
 // MARK: - Average Color Extension
 extension UIImage {
-    /// The most dominant color of an UIImage.
+    /// Find the most dominant color of the image in `self`.
+    ///
+    /// - Returns: The most cominant color as `UIColor` or nil in case of errors in the color search process.
     var averageColor: UIColor? {
         guard let inputImage = CIImage(image: self) else { return nil }
         let extentVector = CIVector(x: inputImage.extent.origin.x, y: inputImage.extent.origin.y, z: inputImage.extent.size.width, w: inputImage.extent.size.height)
@@ -22,5 +24,19 @@ extension UIImage {
         context.render(outputImage, toBitmap: &bitmap, rowBytes: 4, bounds: CGRect(x: 0, y: 0, width: 1, height: 1), format: .RGBA8, colorSpace: nil)
 
         return UIColor(red: CGFloat(bitmap[0]) / 255, green: CGFloat(bitmap[1]) / 255, blue: CGFloat(bitmap[2]) / 255, alpha: CGFloat(bitmap[3]) / 255)
+    }
+}
+
+extension UIImage {
+    /// Creates a color inverted image from the image in `self`.
+    ///
+    /// - Returns: Returns a color inverted image or nil in case of errors in the color inversion process.
+    func invertColor() -> UIImage? {
+        let coreImage = CIImage(image: self)
+        guard let filter = CIFilter(name: "CIColorInvert") else { return nil }
+        filter.setValue(coreImage, forKey: kCIInputImageKey)
+        guard let result = filter.value(forKey: kCIOutputImageKey) as? CIImage else { return nil }
+
+        return UIImage(cgImage: CIContext(options: nil).createCGImage(result, from: result.extent)!)
     }
 }
