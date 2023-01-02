@@ -23,7 +23,7 @@ class NetworkDownloadTask: NetworkQueueable {
     ///   - localFileUrl: The location to save the downloaded file.
     ///   - session: The URLSession instance to use for the network call.
     ///   - completion: Closure to call with Result of failure or success with data from the network call.
-    init(remoteUrl: URL, localFileUrl: URL, session: URLSession, completion: @escaping NetworkQueueDownloadTaskCompletion) {
+    init(remoteUrl: URL, localFileUrl: URL, session: URLSession = URLSession.shared, completion: @escaping NetworkQueueDownloadTaskCompletion) {
 
         let request = URLRequest(url: remoteUrl)
 

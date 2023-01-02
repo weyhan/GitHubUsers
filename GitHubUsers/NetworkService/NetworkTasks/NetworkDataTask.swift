@@ -22,7 +22,7 @@ class NetworkDataTask: NetworkQueueable {
     ///   - remoteUrl: The endpoint for the network API to call.
     ///   - session: The URLSession instance to use for the network call.
     ///   - completion: Closure to call with Result of failure or success with data from the network call.
-    init(remoteUrl: URL, session: URLSession, completion: @escaping NetworkQueueDataTaskCompletion) {
+    init(remoteUrl: URL, session: URLSession = URLSession.shared, completion: @escaping NetworkQueueDataTaskCompletion) {
 
         let request = URLRequest(url: remoteUrl)
 

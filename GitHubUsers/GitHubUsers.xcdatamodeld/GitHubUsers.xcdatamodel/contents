@@ -2,23 +2,42 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21512" systemVersion="22A400" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="GitHubUser" representedClassName="GitHubUser" syncable="YES">
         <attribute name="avatarUrl" optional="YES" attributeType="String"/>
+        <attribute name="bio" optional="YES" attributeType="String"/>
+        <attribute name="blog" optional="YES" attributeType="String"/>
+        <attribute name="company" optional="YES" attributeType="String"/>
+        <attribute name="createdAt" optional="YES" attributeType="String"/>
+        <attribute name="email" optional="YES" attributeType="String"/>
         <attribute name="eventsUrl" optional="YES" attributeType="String"/>
+        <attribute name="followers" optional="YES" attributeType="Decimal" defaultValueString="0"/>
         <attribute name="followersUrl" optional="YES" attributeType="String"/>
+        <attribute name="following" optional="YES" attributeType="Decimal" defaultValueString="0"/>
         <attribute name="followingUrl" optional="YES" attributeType="String"/>
         <attribute name="gistsUrl" optional="YES" attributeType="String"/>
         <attribute name="gravatarId" optional="YES" attributeType="String"/>
+        <attribute name="hireable" optional="YES" attributeType="String"/>
         <attribute name="htmlUrl" optional="YES" attributeType="String"/>
-        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="location" optional="YES" attributeType="String"/>
         <attribute name="login" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="nodeId" optional="YES" attributeType="String"/>
         <attribute name="organizationsUrl" optional="YES" attributeType="String"/>
+        <attribute name="publicGists" optional="YES" attributeType="Decimal" defaultValueString="0"/>
+        <attribute name="publicRepos" optional="YES" attributeType="Decimal" defaultValueString="0"/>
         <attribute name="receivedEventsUrl" optional="YES" attributeType="String"/>
         <attribute name="reposUrl" optional="YES" attributeType="String"/>
         <attribute name="row" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="siteAdmin" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="starredUrl" optional="YES" attributeType="String"/>
         <attribute name="subscriptionsUrl" optional="YES" attributeType="String"/>
+        <attribute name="twitterUsername" optional="YES" attributeType="String"/>
         <attribute name="type" optional="YES" attributeType="String"/>
+        <attribute name="updatedAt" optional="YES" attributeType="String"/>
         <attribute name="url" optional="YES" attributeType="String"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
 </model>

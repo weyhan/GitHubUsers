@@ -52,6 +52,8 @@ class MockCoreDataStack: KodecoCoreDataStack, CoreDataStackProtocol {
             return
         }
 
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+
         context.performAndWait {
             do {
                 try context.save()
@@ -68,6 +70,8 @@ class MockCoreDataStack: KodecoCoreDataStack, CoreDataStackProtocol {
     /// - Parameters:
     ///   - context: The context use to save.
     public func saveDerivedContextAndWait(_ context: NSManagedObjectContext) {
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+
         context.performAndWait {
             do {
                 try context.save()

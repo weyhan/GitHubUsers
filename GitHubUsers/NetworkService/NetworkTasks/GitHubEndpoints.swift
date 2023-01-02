@@ -23,4 +23,17 @@ struct GitHubEndpoints {
         return urlComponent.url!
     }
 
+    /// Compose the URL to the GitHub API to retrieve the user profile.
+    ///
+    /// - Parameters:
+    ///   - forLogin: The user login at GitHub.
+    /// - Returns: URL to the user profile API.
+    static func userProfile(forLogin login: String) -> URL {
+        var urlComponent = URLComponents()
+        urlComponent.scheme = "https"
+        urlComponent.host = "api.github.com"
+        urlComponent.path = "/users/\(login)"
+
+        return urlComponent.url!
+    }
 }

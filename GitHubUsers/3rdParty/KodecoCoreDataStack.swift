@@ -70,6 +70,8 @@ class KodecoCoreDataStack {
             return
         }
 
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+
         context.perform {
             do {
                 try context.save()
@@ -81,6 +83,8 @@ class KodecoCoreDataStack {
     }
 
     public func saveDerivedContext(_ context: NSManagedObjectContext) {
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+
         context.perform {
             do {
                 try context.save()

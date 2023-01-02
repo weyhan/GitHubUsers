@@ -41,10 +41,6 @@ class HomeCellViewModel {
 
     var delegate: HomeTableViewCellProtocol!
 
-    private let usersPath = "users"
-    private let avatarPath = "avatar"
-    private let avatarFilename = "avatar"
-
     private var fileDownloadTask: NetworkDownloadTask? = nil
 
     /// Initializes view model.
@@ -64,27 +60,13 @@ class HomeCellViewModel {
         (row + 1) % AppConstants.invertedRowDistance == 0
     }
 
-    /// `URL` to the cached avatar image file.
-    ///
-    /// The `URL` is constructed based on convention `<cache dir>/user/<id>/avatar/avatar.image`.
-    /// - Parameters:
-    ///   - forId: The ID of the avatar image's owner.
-    func avatarImageFileUrl(forId id: Int) -> URL {
-        cacheDirectoryUrl
-            .appendingPathComponent(usersPath, conformingTo: .directory)
-            .appendingPathComponent("\(id)", conformingTo: .directory)
-            .appendingPathComponent(avatarPath, conformingTo: .directory)
-            .appendingPathComponent(avatarFilename, conformingTo: .fileURL)
-            .appendingPathExtension("image")
-    }
-
     /// Setup and queue network download task for downloading avatar image.
     func downloadAvatarImage() {
         guard let url = URL(string: avatarUrl) else {
             return
         }
 
-        let cacheFileUrl = avatarImageFileUrl(forId: id)
+        let cacheFileUrl = Cache.avatarImageFileUrl(forId: id)
 
         let fileDownloadTask = NetworkDownloadTask(remoteUrl: url, localFileUrl: cacheFileUrl, session: URLSession.shared) { [weak self] result in
             NetworkQueue.shared.release()
@@ -117,7 +99,7 @@ class HomeCellViewModel {
 
     /// Load avatar image into `Data` from file.
     func loadAvatarImageData() -> Data? {
-        return try? Data(contentsOf: avatarImageFileUrl(forId: id))
+        return try? Data(contentsOf: Cache.avatarImageFileUrl(forId: id))
     }
 
     /// Release view model when associated cell is reused for another row.

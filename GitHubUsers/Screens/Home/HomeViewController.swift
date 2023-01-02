@@ -6,12 +6,11 @@
 //
 
 import UIKit
-import CoreData
 
 /// Home view controller
 ///
 /// List GitHub users from GitHub's API for user list
-class HomeViewController: UIViewController, HomeViewDelegate {
+class HomeViewController: UIViewController, HomeViewDelegate, SwiftUIPresentable {
 
     @IBOutlet var statusContainerView: UIView!
     @IBOutlet var statusView: UIView!
@@ -155,6 +154,8 @@ extension HomeViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+
+        viewModel.didSelectRowAt(row: indexPath.row)
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -169,7 +170,7 @@ extension HomeViewController: UITableViewDelegate {
 
         // Setup cell with view model.
         guard let footerCell = cell as? HomeFooterTableViewCellProtocol else {
-            fatalError("Home UITableView misconfigured.")
+            fatalError("Home UITableView is misconfigured.")
         }
 
         footerCell.setup(withViewModel: footerViewModel)

@@ -30,7 +30,7 @@ final class GitHubUserTests: XCTestCase {
     /// [https://api.github.com/users?since=0](https://api.github.com/users?since=0)
     func testDecoderJSON() throws {
 
-        guard let data = loadFile(withFilename: "testDecoderJSON", extension: "json") else {
+        guard let data = loadBundleFile(withFilename: "testDecoderJSON", extension: "json") else {
             XCTFail("Failed to load test data; Decoding JSON test could not proceed.")
             return
         }
@@ -97,7 +97,7 @@ final class GitHubUserTests: XCTestCase {
     /// [https://api.github.com/users?since=0](https://api.github.com/users?since=0)
     func testSavingRootContext() throws {
 
-        guard let data = loadFile(withFilename: "testSavingRootContext", extension: "json") else {
+        guard let data = loadBundleFile(withFilename: "testSavingRootContext", extension: "json") else {
             XCTFail("Failed to load test data; Decoding JSON test could not proceed.")
             return
         }
@@ -126,6 +126,7 @@ final class GitHubUserTests: XCTestCase {
     }
 
     /// Test fetch GitHubUser
+    ///
     /// Mock data is taken from the response of GitHub's API at:
     ///
     /// [https://api.github.com/users?since=0](https://api.github.com/users?since=0)
@@ -206,7 +207,7 @@ final class GitHubUserTests: XCTestCase {
     /// [https://api.github.com/users/defunkt](https://api.github.com/users/defunkt)
     func testDecoder_FailCase() throws {
         // testDecoder_FailCase.json is not in the GitHubUser data structure.
-        guard let data = loadFile(withFilename: "testDecoder_FailCase", extension: "json") else {
+        guard let data = loadBundleFile(withFilename: "testDecoder_FailCase", extension: "json") else {
             XCTFail("Failed to load test data; Decoding JSON test could not proceed.")
             return
         }
@@ -220,6 +221,78 @@ final class GitHubUserTests: XCTestCase {
     }
 }
 
+extension GitHubUserTests {
+
+    /// Test update individual GitHubUser profile.
+    ///
+    /// Update GitHub user profile cached from GitHub user list API with GitHub user profile from individual user profile API.
+    func testUpdateGitHubUersWithIndividualProfileJSON() {
+        // Setup for test.
+        // =================================================
+        // Load mock data from GitHub user list API.
+        guard let data = loadBundleFile(withFilename: "testUpdateGitHubUersWithIndividualProfileData-1", extension: "json") else {
+            XCTFail("Failed to load test data; Decoding JSON test could not proceed.")
+            return
+        }
+
+        let context = coreDataStack.backgroundContext()
+
+        let jsonService = JSONDecoderService<[GitHubUser]>(context: context, coreDataStack: coreDataStack)
+        let decoded = try? jsonService.decode(data: data)
+
+        XCTAssertNotNil(decoded)
+
+        coreDataStack.saveContextAndWait(context)
+
+        let request = GitHubUser.fetchRequest()
+        let fetched = try? context.fetch(request)
+        XCTAssertNotNil(fetched)
+
+        guard let fetched = fetched else {
+            return
+        }
+
+        XCTAssertTrue(fetched.count == 1, "Unexpected decoded result")
+
+        // Test update.
+        // =================================================
+        // Load moke JSON from GitHub single user API.
+        guard let data2 = loadBundleFile(withFilename: "testUpdateGitHubUersWithIndividualProfileData-2", extension: "json") else {
+            XCTFail("Failed to load test data; Decoding JSON test could not proceed.")
+            return
+        }
+
+        let jsonService2 = JSONDecoderService<GitHubUser>(context: context, coreDataStack: coreDataStack)
+        let decoded2 = try? jsonService2.decode(data: data2)
+        XCTAssertNotNil(decoded2)
+
+        coreDataStack.saveContextAndWait(context)
+
+        // Fetch all records from persistent storage.
+        let request2 = GitHubUser.fetchRequest()
+
+        let fetched2: [GitHubUser]?
+        do {
+            fetched2 = try context.fetch(request2)
+            XCTAssertNotNil(fetched2)
+
+        } catch let error as NSError {
+            print("Fetch error: \(error) description: \(error.userInfo)")
+            XCTFail("Exception while fetching GitUserData")
+            return
+        }
+
+        guard let fetched2 = fetched2 else {
+            return
+        }
+
+        XCTAssertTrue(fetched2.count == 1, "Unexpected decoded result")
+
+        // Test changed data is updated successfully.
+        XCTAssertTrue(fetched2[0].login == "mojombo-changed", "Unexpected update result")
+    }
+
+}
 
 // MARK: - Mockups
 extension GitHubUserTests {
@@ -230,7 +303,7 @@ extension GitHubUserTests {
     /// - Parameters:
     ///   - withFilename: Filename of the desired file.
     ///   - extension: File extension of the desired file.
-    func loadFile(withFilename filename: String, extension ext: String) -> Data? {
+    func loadBundleFile(withFilename filename: String, extension ext: String) -> Data? {
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: filename, withExtension: ext) else {
             return nil

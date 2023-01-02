@@ -35,6 +35,20 @@ class GitHubUser: NSManagedObject, Decodable {
     @NSManaged var receivedEventsUrl: String
     @NSManaged var type: String
     @NSManaged var siteAdmin: Bool
+    @NSManaged var name: String?
+    @NSManaged var company: String?
+    @NSManaged var blog: String?
+    @NSManaged var location: String?
+    @NSManaged var email: String?
+    @NSManaged var hireable: String?
+    @NSManaged var bio: String?
+    @NSManaged var twitterUsername: String?
+    @NSManaged var publicRepos: NSDecimalNumber?
+    @NSManaged var publicGists: NSDecimalNumber?
+    @NSManaged var followers: NSDecimalNumber?
+    @NSManaged var following: NSDecimalNumber?
+    @NSManaged var createdAt: String?
+    @NSManaged var updatedAt: String?
 
     // Keep index of UITableView row position.
     @NSManaged var row: Int64
@@ -58,6 +72,20 @@ class GitHubUser: NSManagedObject, Decodable {
         case receivedEventsUrl
         case type
         case siteAdmin
+        case name
+        case company
+        case blog
+        case location
+        case email
+        case hireable
+        case bio
+        case twitterUsername
+        case publicRepos
+        case publicGists
+        case followers
+        case following
+        case createdAt
+        case updatedAt
     }
 
     /// Initialize from decoder.
@@ -72,6 +100,7 @@ class GitHubUser: NSManagedObject, Decodable {
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
+        // Data from GitHub user list endpoint. i.e. https://api.github.com/users?since=[id]
         self.login = try container.decode(String.self, forKey: .login)
         self.id = try container.decode(Int64.self, forKey: .id)
         self.nodeId = try container.decode(String.self, forKey: .nodeId)
@@ -90,6 +119,23 @@ class GitHubUser: NSManagedObject, Decodable {
         self.receivedEventsUrl = try container.decode(String.self, forKey: .receivedEventsUrl)
         self.type = try container.decode(String.self, forKey: .type)
         self.siteAdmin = try container.decode(Bool.self, forKey: .siteAdmin)
+
+        // Additional data from hitting the GitHub user's individual endpoint not available
+        // when hitting the GitHub user list endpoint. i.e. https://api.github.com/users/[username]
+        self.name = try container.decodeIfPresent(String.self, forKey: .name)
+        self.company = try container.decodeIfPresent(String.self, forKey: .company)
+        self.blog = try container.decodeIfPresent(String.self, forKey: .blog)
+        self.location = try container.decodeIfPresent(String.self, forKey: .location)
+        self.email = try container.decodeIfPresent(String.self, forKey: .email)
+        self.hireable = try container.decodeIfPresent(String.self, forKey: .hireable)
+        self.bio = try container.decodeIfPresent(String.self, forKey: .bio)
+        self.twitterUsername = try container.decodeIfPresent(String.self, forKey: .twitterUsername)
+        self.publicRepos = try container.decodeIfPresent(Decimal.self, forKey: .publicRepos) as NSDecimalNumber?
+        self.publicGists = try container.decodeIfPresent(Decimal.self, forKey: .publicGists) as NSDecimalNumber?
+        self.followers = try container.decodeIfPresent(Decimal.self, forKey: .followers) as NSDecimalNumber?
+        self.following = try container.decodeIfPresent(Decimal.self, forKey: .following) as NSDecimalNumber?
+        self.createdAt = try container.decodeIfPresent(String.self, forKey: .createdAt)
+        self.updatedAt = try container.decodeIfPresent(String.self, forKey: .updatedAt)
 
         // Set to defaults value. Actual row value will be assigned after decoding.
         self.row = -1
@@ -125,5 +171,26 @@ extension GitHubUser {
 
         return Int(lastId)
     }
+
+    /// Retrieve user profile from cache.
+    ///
+    /// If the user profile is available in cached the `GitHubUser` object is returned. Otherwise nil is returned.
+    /// - Parameters:
+    ///   - atRow: The user profile row number.
+    /// - Returns: The user profile type `GitHubUser` that contains the user profile data or nil.
+    static func fetchUser(atRow row: Int) -> GitHubUser? {
+        let fetchRequest = GitHubUser.fetchRequest()
+        let predicate = NSPredicate(format: "row == \(row)")
+
+        fetchRequest.predicate = predicate
+        fetchRequest.fetchLimit = 1
+
+        guard let user = try? CoreDataStack.shared.mainContext.fetch(fetchRequest).first else {
+            return nil
+        }
+
+        return user
+    }
+
 }
 

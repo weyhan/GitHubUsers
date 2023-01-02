@@ -23,7 +23,7 @@ class HomeViewModel {
 
     /// The object that acts as the delegate of the view.
     ///
-    /// The delegate must adopt the HomeViewDelegate protocol. The delegate isn’t retained.
+    /// The delegate must adopt the HomeViewDelegate protocol. The delegate is not retained.
     weak var delegate: HomeViewDelegate?
 
     /// The number of elements of users record cached in persistent store.
@@ -42,7 +42,10 @@ class HomeViewModel {
 
     private var footerCellViewModel = FooterCellViewModel()
 
-    // MARK: - UI Delegates Calls
+}
+
+// MARK: - UI Delegates Calls Extension
+extension HomeViewModel {
 
     /// Method to refresh UI.
     ///
@@ -71,7 +74,10 @@ class HomeViewModel {
         }
     }
 
-    // MARK: - Cell View Model Methods
+}
+
+// MARK: - Cell View Model Methods Extension
+extension HomeViewModel {
 
     /// Asks the data source for a cell view model for a particular location of the table view.
     func cellViewModel(forRowAt row: Int) -> HomeCellViewModelProtocol {
@@ -80,6 +86,11 @@ class HomeViewModel {
         }
 
         return cellViewModelNormalMode(row)
+    }
+
+    /// Get footer cell view model.
+    func cellViewModelForFooter() -> FooterCellViewModel {
+        return footerCellViewModel
     }
 
     /// Get normal view model for search mode.
@@ -93,24 +104,13 @@ class HomeViewModel {
 
     /// Get cell view model for normal mode.
     private func cellViewModelNormalMode(_ row: Int) -> HomeCellViewModelProtocol {
-        let fetchRequest = GitHubUser.fetchRequest()
-        let predicate = NSPredicate(format: "row == \(row)")
-
-        fetchRequest.predicate = predicate
-        fetchRequest.fetchLimit = 1
-
-        guard let user = try? CoreDataStack.shared.mainContext.fetch(fetchRequest).first,
+        guard let user = GitHubUser.fetchUser(atRow: row),
               let homeCellViewModel = makeCellViewModel(row, user: user) else {
 
             return NormalCellViewModel(id: -1, login: "-", details: "-", avatarUrl: "", row: -1)
         }
 
         return homeCellViewModel
-    }
-
-    /// Get footer cell view model.
-    func cellViewModelForFooter() -> FooterCellViewModel {
-        return footerCellViewModel
     }
 
     /// Make view model for cell.
@@ -137,16 +137,39 @@ class HomeViewModel {
     /// Each of the criteria will determine if the cell is with or without ornament and if yes it's of which types.
     private func viewModelType(forRowAt row: Int) -> HomeCellType {
         // TODO: Get from persistent store if user have note stored.
-//        let hasNote = false
-//
-//        if hasNote {
-//            return .note
-//        }
+        //        let hasNote = false
+        //
+        //        if hasNote {
+        //            return .note
+        //        }
 
         return .normal
     }
 
-    // MARK: - JSON Decoding Methods
+    /// Handles did select row on user list table view.
+    ///
+    /// Fetch user profile from cached user profiles and present profile screen with user profile data.
+    /// - Parameters:
+    ///   - row: The row number selected.
+    func didSelectRowAt(row: Int) {
+        guard let user = GitHubUser.fetchUser(atRow: row) else {
+            fatalError("Home UITableView is misconfigured.")
+        }
+
+        guard let viewController = delegate as? SwiftUIPresentable else {
+            fatalError("Home UITableView is misconfigured.")
+        }
+        
+        let profileViewModel = ProfileViewModel(row: row, id: user.id, login: user.login)
+        let profileView = ProfileView(viewModel: profileViewModel)
+        let profileViewPresenter = SwiftUIPresenter(viewController: viewController, swiftUIView: profileView)
+        profileViewPresenter.present()
+    }
+
+}
+
+// MARK: - JSON Decoding Methods Extension
+extension HomeViewModel {
 
     /// Decodes results from GitHub user list API.
     private func decodeGitHubUsersList(data: Data, lastIndex: Int, coreDataStack: CoreDataStack, completion: @escaping (Result<[GitHubUser], DecodingError>)->()) {
@@ -173,7 +196,10 @@ class HomeViewModel {
         }
     }
 
-    // MARK: - Network Tasks
+}
+
+// MARK: - Network Tasks Extension
+extension HomeViewModel {
 
     /// Load new data from GitHub users list API.
     ///
@@ -216,6 +242,7 @@ class HomeViewModel {
     }
 }
 
+// MARK: - Search Mode Extension
 extension HomeViewModel {
 
     /// Turn on or off search mode.

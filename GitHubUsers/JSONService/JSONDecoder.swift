@@ -8,6 +8,11 @@
 import Foundation
 import CoreData
 
+/// Errors relating to `DecodingError` class.
+enum DecodingError: Error {
+    case errorDescription(String)
+}
+
 // MARK: - Extensions for Adding CoreData Capability to JSONDecoder
 
 extension CodingUserInfoKey {

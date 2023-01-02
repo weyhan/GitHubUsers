@@ -11,7 +11,7 @@ class NoteTableViewCell: HomeTableViewCell, HomeTableViewCellProtocol {
 
     @IBOutlet var login: UILabel!
     @IBOutlet var details: UILabel!
-    @IBOutlet var avatar: UIImageView!
+    @IBOutlet var avatarImageView: UIImageView!
 
     /// Setup UITableViewCell with a view model.
     ///
@@ -23,7 +23,7 @@ class NoteTableViewCell: HomeTableViewCell, HomeTableViewCellProtocol {
         login.text = viewModel.login
         details.text = viewModel.details
 
-        avatar.image = avatarImage
+        avatarImageView.image = avatarImage
     }
 
     /// Updates avatar image.
@@ -33,7 +33,7 @@ class NoteTableViewCell: HomeTableViewCell, HomeTableViewCellProtocol {
     /// downloaded. This method will not wait for the image to be downloaded and instead will rely on the view model
     /// to call this method again when the image is available.
     func updateAvatar() {
-        avatar.image = avatarImage
+        avatarImageView.image = avatarImage
     }
 
 }
