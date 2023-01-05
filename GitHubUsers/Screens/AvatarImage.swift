@@ -21,8 +21,12 @@ class AvatarImage: ObservableObject {
     private let remoteUrl: URL?
     private var fileDownloadTask: NetworkDownloadTask? = nil
 
-    init(id: Int64, remoteUrlString: String) {
-        self.id = Int(id)
+    convenience init(id: Int64, remoteUrlString: String) {
+        self.init(id: Int(id), remoteUrlString: remoteUrlString)
+    }
+
+    init(id: Int, remoteUrlString: String) {
+        self.id = id
         self.remoteUrl = URL(string: remoteUrlString)
     }
 
@@ -76,6 +80,7 @@ class AvatarImage: ObservableObject {
     /// Cancel download task.
     func cancel() {
         fileDownloadTask?.cancel()
+        fileDownloadTask = nil
     }
 
 }

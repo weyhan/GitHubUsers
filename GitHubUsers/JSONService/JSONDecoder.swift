@@ -13,6 +13,16 @@ enum DecodingError: Error {
     case errorDescription(String)
 }
 
+/// Decoding result type.
+///
+/// `Result` type where success does not capture the result.
+enum DecodingVoidResult {
+    /// Decoding successful.
+    case success
+    /// Error while decoding.
+    case failure(DecodingError)
+}
+
 // MARK: - Extensions for Adding CoreData Capability to JSONDecoder
 
 extension CodingUserInfoKey {

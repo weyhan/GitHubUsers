@@ -7,11 +7,17 @@
 
 import Foundation
 
+/// View model for the profile view.
 class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
+    /// State of the profile view.
     enum State {
+        /// Initial state where no data is loaded yet.
         case idle
+        /// Loading state where data is fetching from remote.
         case loading
+        /// Failed to load data from remote.
         case failed(Error)
+        /// Data loaded from remote.
         case loaded(GitHubUser)
     }
 
@@ -21,11 +27,10 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
     private var id: Int
     private var row: Int
 
+    /// Profile data for user
     var profile: GitHubUser! {
         didSet {
-            DispatchQueue.main.async {
-                self.state = .loaded(self.profile)
-            }
+            set(state: .loaded(self.profile))
         }
     }
 
@@ -35,12 +40,23 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
         self.row = row
     }
 
+    /// Set the state of the profile view.
+    ///
+    /// State is always set in main thread to ensure any view update is performed in the main thread.
+    /// - Parameters:
+    ///   - state: The state of the profile view of type `State`
+    private func set(state: State) {
+        DispatchQueue.main.async { self.state = state }
+    }
+
+    /// Method to trigger loading profile data from remote.
     func loadData() {
-        state = .loading
+        set(state: .loading)
         loadGitHubUserProfile(login: login)
     }
 
-    private func updateProfile() {
+    /// Method to load profile data from cache.
+    private func loadCachedProfile() {
         guard let user = GitHubUser.fetchUser(atRow: row) else {
             return
         }
@@ -48,27 +64,24 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
         profile = user
     }
 
-    func loadGitHubUserProfile(login: String) {
+    /// Method to load profile data from remote.
+    ///
+    /// - Parameters:
+    ///   - login: The login ID of the user profile to load.
+    private func loadGitHubUserProfile(login: String) {
         let url = GitHubEndpoints.userProfile(forLogin: login)
 
         let dataTask = NetworkDataTask(remoteUrl: url, session: URLSession.shared) { [weak self] result in
             guard let self = self else { return }
 
             NetworkQueue.shared.release()
+
             switch result {
-
             case .success(let data):
-                self.decodeGitHubUsersProfile(data: data, row: self.row, coreDataStack: CoreDataStack.shared) { decodeResult in
-                    if case .success(_) = decodeResult {
-                        self.updateProfile()
-
-                    } else {
-                        self.state = .failed(DecodingError.errorDescription("Decode JSON Error"))
-                    }
-                }
+                self.decodeGitHubUsersProfile(data: data, row: self.row)
 
             case .failure(let error):
-                self.state = .failed(error)
+                self.set(state: .failed(error))
             }
 
         }
@@ -81,8 +94,37 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
 
 extension ProfileViewModel {
 
-    /// Decodes results from GitHub user profile API.
-    private func decodeGitHubUsersProfile(data: Data, row: Int, coreDataStack: CoreDataStack, completion: @escaping (Result<GitHubUser, DecodingError>)->()) {
+    /// Convenient method to decodes results from GitHub user profile API.
+    ///
+    /// Setup completion closure to handle decode success and failure.
+    /// - Parameters:
+    ///   - data: Raw JSON data.
+    ///   - row: The profile row in relation with the Home screen table view row.
+    private func decodeGitHubUsersProfile(data: Data, row: Int) {
+
+        decode(data: data, row: row) { decodeResult in
+            switch decodeResult {
+            case .success:
+                // Data successfully decoded and saved in cache. Proceed to load data from
+                // saved cached data for display.
+                self.loadCachedProfile()
+
+            case .failure(_):
+                let error = DecodingError.errorDescription("Decode JSON Error")
+                self.set(state: .failed(error))
+            }
+        }
+
+    }
+
+    /// Method to decodes results from GitHub user profile API.
+    ///
+    /// - Parameters:
+    ///   - data: Raw JSON data.
+    ///   - row: The profile row in relation with the Home screen table view row.
+    ///   - coreDataStack: The CoreData stack to use for saving the decoded result.
+    ///   - completion: The closure to call with Result of failure or success.
+    private func decode(data: Data, row: Int, coreDataStack: CoreDataStack = CoreDataStack.shared, completion: @escaping (DecodingVoidResult)->()) {
 
         let context = coreDataStack.backgroundContext()
 
@@ -94,21 +136,16 @@ extension ProfileViewModel {
                 user = try decoder.decode(data: data)
 
             } catch {
-                completion(.failure(error as! DecodingError))
+                completion(.failure(DecodingError.errorDescription(error.localizedDescription)))
                 return
             }
 
             user.row = Int64(row)
             coreDataStack.saveContextAndWait(context)
 
-            completion(.success(user))
+            completion(.success)
         }
     }
 
 }
 
-extension ProfileViewModel {
-    var avatarImageUrl: URL {
-        Cache.avatarImageFileUrl(forId: id)
-    }
-}

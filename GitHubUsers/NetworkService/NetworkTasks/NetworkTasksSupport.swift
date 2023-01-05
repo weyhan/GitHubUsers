@@ -7,13 +7,13 @@
 
 import Foundation
 
-enum VoidResult {
+enum NetworkVoidResult {
     case success
     case failure(NetworkError)
 }
 
 typealias NetworkQueueDataTaskCompletion = (Result<Data, NetworkError>)->()
-typealias NetworkQueueDownloadTaskCompletion = (VoidResult)->()
+typealias NetworkQueueDownloadTaskCompletion = (NetworkVoidResult)->()
 
 /// Internal error code from errors returned from URLSession network calls.
 enum NetworkError: Error {

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 enum HomeCellType {
     case normal
@@ -19,7 +20,6 @@ enum HomeCellType {
 /// - Setup table view cells on the Home screen table view.
 protocol HomeTableViewCellProtocol {
     func setup(withViewModel viewModel: HomeCellViewModelProtocol)
-    func updateAvatar()
 }
 
 /// Methods for managing and configuring the table view footer cell on the Home screen.
@@ -34,6 +34,10 @@ class HomeTableViewCell: UITableViewCell {
 
     var viewModel: HomeCellViewModelProtocol!
 
+    private var cancellable: Set<AnyCancellable> = []
+
+    var avatar: AvatarImage!
+
     /// Prepares a reusable cell for reuse by the table view’s delegate.
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -42,28 +46,13 @@ class HomeTableViewCell: UITableViewCell {
         viewModel = nil
     }
 
-    /// The avatar image.
+    /// Setup to observe the avatar image object.
     ///
-    /// Avatar image will be loaded from cache if available. If the avatar image is not cached, this computed property will
-    /// request the view model to download the  avatar image and will load the generic avatar image while the avatar
-    /// image is downloaded.
-    var avatarImage: UIImage {
-        guard let imageData = viewModel.loadAvatarImageData(),
-              let image = UIImage(data: imageData) else {
-
-            // If the load image results in error, assume image has not been downloaded
-            // or cached image file is corrupted.
-            viewModel.downloadAvatarImage()
-            return AppConstants.defaultAvatarImage
-        }
-
-        if viewModel.isAvatarColorInverted {
-            if let invertedImage = image.invertColor() {
-                return invertedImage
-            }
-        }
-
-        return image
+    /// Setup to execute the handler closure when the image property in `AvatarImage` object changed.
+    func bindAvatarImage(handler: @escaping (UIImage?)->()) {
+        avatar.$image.sink { image in
+            DispatchQueue.main.async { handler(image) }
+        }.store(in: &cancellable)
     }
 
 }

@@ -13,15 +13,13 @@ protocol HomeCellViewModelProtocol {
     var login: String { get }
     var details: String { get }
     var avatarUrl: String { get }
+    var avatar: AvatarImage? { get }
 
     var reuseIdentifier: String { get }
 
     var delegate: HomeTableViewCellProtocol! { get set }
 
     var isAvatarColorInverted: Bool { get }
-
-    func downloadAvatarImage()
-    func loadAvatarImageData() -> Data?
 
     func prepareForReuse()
 }
@@ -39,9 +37,9 @@ class HomeCellViewModel {
     let avatarUrl: String
     let row: Int
 
-    var delegate: HomeTableViewCellProtocol!
+    var avatar: AvatarImage?
 
-    private var fileDownloadTask: NetworkDownloadTask? = nil
+    var delegate: HomeTableViewCellProtocol!
 
     /// Initializes view model.
     init(id: Int64, login: String, details: String, avatarUrl: String, row: Int64) {
@@ -50,6 +48,8 @@ class HomeCellViewModel {
         self.details = details
         self.avatarUrl = avatarUrl
         self.row = Int(row)
+
+        self.avatar = AvatarImage(id: id, remoteUrlString: avatarUrl)
     }
 
     /// Boolean to indicate if the avatar image color should be inverted.
@@ -60,52 +60,10 @@ class HomeCellViewModel {
         (row + 1) % AppConstants.invertedRowDistance == 0
     }
 
-    /// Setup and queue network download task for downloading avatar image.
-    func downloadAvatarImage() {
-        guard let url = URL(string: avatarUrl) else {
-            return
-        }
-
-        let cacheFileUrl = Cache.avatarImageFileUrl(forId: id)
-
-        let fileDownloadTask = NetworkDownloadTask(remoteUrl: url, localFileUrl: cacheFileUrl, session: URLSession.shared) { [weak self] result in
-            NetworkQueue.shared.release()
-
-            switch result {
-            case .success:
-                self?.updateAvatar()
-                break
-
-            case .failure(_):
-                break
-            }
-        }
-
-        self.fileDownloadTask = fileDownloadTask
-
-        let queue = NetworkQueue.shared
-        queue.enqueue(networkJob: fileDownloadTask)
-        queue.resume()
-    }
-
-    /// Method to update avatar image after avatar image is downloaded.
-    ///
-    /// - Note: Call to UI delegate is always called on the main thread.
-    func updateAvatar() {
-        DispatchQueue.main.async { [weak self] in
-            self?.delegate.updateAvatar()
-        }
-    }
-
-    /// Load avatar image into `Data` from file.
-    func loadAvatarImageData() -> Data? {
-        return try? Data(contentsOf: Cache.avatarImageFileUrl(forId: id))
-    }
-
     /// Release view model when associated cell is reused for another row.
     func prepareForReuse() {
-        fileDownloadTask?.cancel()
-        fileDownloadTask = nil
+        avatar?.cancel()
+        avatar = nil
         delegate = nil
     }
 }
