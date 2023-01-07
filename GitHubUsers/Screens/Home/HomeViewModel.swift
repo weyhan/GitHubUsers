@@ -162,8 +162,8 @@ extension HomeViewModel {
         
         let profileViewModel = ProfileViewModel(row: row, id: user.id, login: user.login)
         let profileView = ProfileView(viewModel: profileViewModel)
-        let profileViewPresenter = SwiftUIPresenter(viewController: viewController, swiftUIView: profileView)
-        profileViewPresenter.present()
+
+        SwiftUIPresenter.present(viewController: viewController, swiftUIView: profileView)
     }
 
 }
