@@ -9,6 +9,7 @@ import SwiftUI
 
 protocol ProfileViewModelProtocol: ObservableObject {
     func loadData()
+    func save(notes: String)
 }
 
 struct ProfileView: View {
@@ -23,7 +24,7 @@ struct ProfileView: View {
             case .failed(let error):
                 ErrorView(message: error.localizedDescription)
             case .loaded(let user):
-                PView(user: user)
+                ContentView(viewModel: viewModel, user: user)
             }
         }
 }
@@ -36,8 +37,10 @@ struct ErrorView: View {
     }
 }
 
-struct PView: View {
+struct ContentView: View {
+    @ObservedObject var viewModel: ProfileViewModel
     let user: GitHubUser
+
     var body: some View {
         NavigationView {
             VStack {
@@ -46,11 +49,12 @@ struct PView: View {
                     .padding(.horizontal)
                 UserDetails(user: user)
                     .padding()
-                NoteField()
+                NoteField(noteText: user.notes?.text ?? "")
+                    .environmentObject(viewModel)
                 Spacer()
-                    .navigationTitle(user.name ?? "Profile")
-                    .navigationBarTitleDisplayMode(.inline)
             }
+            .navigationTitle(user.name ?? "Profile")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
@@ -129,14 +133,15 @@ struct UserDetails: View {
 }
 
 struct NoteField: View {
-    @State private var profileText = ""
+    @State var noteText: String
+    @EnvironmentObject var viewModel: ProfileViewModel
 
     var body: some View {
         VStack {
             VStack {
                 Text("Notes:")
                     .frame(maxWidth: .infinity, alignment: .leading)
-                TextEditor(text: $profileText)
+                TextEditor(text: $noteText)
                     .foregroundColor(.secondary)
                     .lineLimit(5)
                     .frame(height: 180)
@@ -146,7 +151,9 @@ struct NoteField: View {
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(.gray, lineWidth: 0.5)
                     )
-                Button("Save") { }
+                Button("Save") {
+                    viewModel.save(notes: noteText)
+                }
             }
         }
         .padding()

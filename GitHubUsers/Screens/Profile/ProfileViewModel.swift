@@ -29,6 +29,7 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
 
     /// Profile data for user
     var profile: GitHubUser! {
+        // Notify subscribers to the view state of successful loading the profile data.
         didSet {
             set(state: .loaded(self.profile))
         }
@@ -47,6 +48,20 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
     ///   - state: The state of the profile view of type `State`
     private func set(state: State) {
         DispatchQueue.main.async { self.state = state }
+    }
+
+    /// Save notes on profile.
+    ///
+    /// If `notes` is empty string, the note entry is removed instead.
+    /// - Parameters:
+    ///   - notes: The text to be saved in the cache.
+    func save(notes: String) {
+        if notes.isEmpty {
+            GitHubUser.remove(notesForId: id)
+
+        } else {
+            GitHubUser.save(notes: notes, forId: id)
+        }
     }
 
     /// Method to trigger loading profile data from remote.
@@ -129,6 +144,10 @@ extension ProfileViewModel {
         let context = coreDataStack.backgroundContext()
 
         context.perform {
+            // Save the note text for resaving after the decode, otherwise the note text will be
+            // overwritten.
+            let text = GitHubUser.fetchUser(atRow: row, context: context)?.notes?.text
+
             let decoder = JSONDecoderService<GitHubUser>(context: context, coreDataStack: coreDataStack)
 
             let user: GitHubUser
@@ -140,7 +159,14 @@ extension ProfileViewModel {
                 return
             }
 
+            // Resave the row data and the profile notes.
             user.row = Int64(row)
+            if let text = text {
+                let notes = Notes(context: context)
+                notes.text = text
+                user.notes = notes
+            }
+
             coreDataStack.saveContextAndWait(context)
 
             completion(.success)

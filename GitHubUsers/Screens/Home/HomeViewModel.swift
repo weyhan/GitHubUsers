@@ -282,10 +282,13 @@ extension HomeViewModel {
     /// - Parameters:
     ///   - text: Text use to filter result for the user search.
     private func enterSearchMode(_ text: String) {
-        let request = GitHubUser.fetchRequest()
+        // Search in both properties, `login` and `notes.text`.
+        let predicates = NSCompoundPredicate(orPredicateWithSubpredicates: [
+            NSPredicate(format: "login CONTAINS[cd] %@", argumentArray: [text]),
+            NSPredicate(format: "notes.text CONTAINS[cd] %@", argumentArray: [text])
+        ])
 
-        request.predicate = NSPredicate(format: "login CONTAINS[cd] %@", argumentArray: [text])
-        searchResult = try? CoreDataStack.shared.mainContext.fetch(request)
+        searchResult = GitHubUser.fetchUsers(predicates: predicates)
 
         isSearchMode = true
         footerCellViewModel.isSearchMode = true

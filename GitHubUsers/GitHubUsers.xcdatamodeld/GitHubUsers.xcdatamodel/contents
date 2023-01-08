@@ -34,10 +34,15 @@
         <attribute name="type" optional="YES" attributeType="String"/>
         <attribute name="updatedAt" optional="YES" attributeType="String"/>
         <attribute name="url" optional="YES" attributeType="String"/>
+        <relationship name="notes" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Notes" inverseName="profile" inverseEntity="Notes"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
+    </entity>
+    <entity name="Notes" representedClassName="Notes" syncable="YES">
+        <attribute name="text" optional="YES" attributeType="String"/>
+        <relationship name="profile" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GitHubUser" inverseName="notes" inverseEntity="GitHubUser"/>
     </entity>
 </model>

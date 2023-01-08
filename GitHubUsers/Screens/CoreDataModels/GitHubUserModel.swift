@@ -50,6 +50,9 @@ class GitHubUser: NSManagedObject, Decodable {
     @NSManaged var createdAt: String?
     @NSManaged var updatedAt: String?
 
+    // Relationship with Notes entity
+    @NSManaged public var notes: Notes?
+
     // Keep index of UITableView row position.
     @NSManaged var row: Int64
 
@@ -172,25 +175,137 @@ extension GitHubUser {
         return Int(lastId)
     }
 
-    /// Retrieve user profile from cache.
+    /// Retrieve user profile from cache at certain row.
     ///
     /// If the user profile is available in cached the `GitHubUser` object is returned. Otherwise nil is returned.
     /// - Parameters:
     ///   - atRow: The user profile row number.
+    ///   - context: Managed object context. Defaults to main context.
     /// - Returns: The user profile type `GitHubUser` that contains the user profile data or nil.
-    static func fetchUser(atRow row: Int) -> GitHubUser? {
+    static func fetchUser(atRow row: Int, context: NSManagedObjectContext = CoreDataStack.shared.mainContext) -> GitHubUser? {
+
         let fetchRequest = GitHubUser.fetchRequest()
-        let predicate = NSPredicate(format: "row == \(row)")
+        let predicate = NSPredicate(format: "row == %i", row)
 
         fetchRequest.predicate = predicate
         fetchRequest.fetchLimit = 1
 
-        guard let user = try? CoreDataStack.shared.mainContext.fetch(fetchRequest).first else {
+        guard let user = try? context.fetch(fetchRequest).first else {
             return nil
         }
 
         return user
+
     }
 
+    /// Retrieve user profile from cache by ID.
+    ///
+    /// If the user profile is available in cached the `GitHubUser` object is returned. Otherwise nil is returned.
+    /// - Parameters:
+    ///   - withId: Users GitHub ID.
+    ///   - context: Managed object context. Defaults to main context.
+    /// - Returns: The user profile type `GitHubUser` that contains the user profile data or nil.
+    static func fetchUser(byId id: Int, context: NSManagedObjectContext = CoreDataStack.shared.mainContext) -> GitHubUser? {
+
+        let fetchRequest = GitHubUser.fetchRequest()
+        let predicate = NSPredicate(format: "id == %i", id)
+
+        fetchRequest.predicate = predicate
+        fetchRequest.fetchLimit = 1
+
+        guard let user = try? context.fetch(fetchRequest).first else {
+            return nil
+        }
+
+        return user
+
+    }
+
+    /// Retrieve profile notes from cache by ID.
+    ///
+    /// If the profile notes is available in cached the `Notes` object is returned. Otherwise nil is returned.
+    /// - Parameters:
+    ///   - withId: Users GitHub ID.
+    ///   - context: Managed object context. Defaults to main context.
+    /// - Returns: The profile note type `Notes` that contains the profile notes or nil.
+    static func fetchNotes(byId id: Int, context: NSManagedObjectContext = CoreDataStack.shared.mainContext) -> Notes? {
+
+        let fetchRequest = Notes.fetchRequest()
+        let predicate = NSPredicate(format: "profile.id == %i", id)
+
+        fetchRequest.predicate = predicate
+        fetchRequest.fetchLimit = 1
+
+        guard let notes = try? context.fetch(fetchRequest).first else {
+            return nil
+        }
+
+        return notes
+    }
+
+    /// Retrieve user profile from cache search by compound predicates.
+    ///
+    /// - Parameters:
+    ///   - predicates: A`NSPredicate` object use in the fetch request to find user profiles.
+    ///   - context: Managed object context. Defaults to main context.
+    /// - Returns: An array of `GitHubUser` or nil if none is found.
+    static func fetchUsers(predicates: NSPredicate, context: NSManagedObjectContext = CoreDataStack.shared.mainContext) -> [GitHubUser]? {
+        let request = GitHubUser.fetchRequest()
+        request.predicate = predicates
+
+        return try? context.fetch(request)
+    }
 }
 
+extension GitHubUser {
+
+    /// Saves profile notes to cache.
+    ///
+    /// - Parameters:
+    ///   - notes: The note text to save.
+    ///   - forId: Users GitHub ID.
+    static func save(notes text: String, forId id: Int) {
+
+        let coreDataStack = CoreDataStack.shared
+        let context = coreDataStack.backgroundContext()
+
+        context.perform {
+            guard let user = GitHubUser.fetchUser(byId: id, context: context) else {
+                return
+            }
+
+            if user.notes?.text == nil {
+                let notes = Notes(context: context)
+                notes.text = text
+                user.notes = notes
+
+            } else {
+                user.notes?.text = text
+
+            }
+
+            coreDataStack.saveContextAndWait(context)
+        }
+
+    }
+
+    /// Remove profile notes on cache.
+    ///
+    /// - Parameters:
+    ///   - notesForId: The GitHub user ID to remove notes from.
+    static func remove(notesForId id: Int) {
+
+        let coreDataStack = CoreDataStack.shared
+        let context = coreDataStack.backgroundContext()
+
+        context.perform {
+            guard let notes = GitHubUser.fetchNotes(byId: id, context: context) else {
+                return
+            }
+
+            context.delete(notes)
+            coreDataStack.saveContextAndWait(context)
+        }
+
+    }
+}
