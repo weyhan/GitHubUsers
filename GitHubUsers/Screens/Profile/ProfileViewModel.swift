@@ -25,7 +25,6 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
 
     private var login: String
     private var id: Int
-    private var row: Int
 
     /// Profile data for user
     var profile: GitHubUser! {
@@ -35,10 +34,9 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
         }
     }
 
-    init(row: Int, id: Int64, login: String) {
+    init(id: Int64, login: String) {
         self.login = login
         self.id = Int(id)
-        self.row = row
     }
 
     /// Set the state of the profile view.
@@ -72,7 +70,7 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
 
     /// Method to load profile data from cache.
     private func loadCachedProfile() {
-        guard let user = GitHubUser.fetchUser(atRow: row) else {
+        guard let user = GitHubUser.fetchUser(byId: id) else {
             return
         }
 
@@ -93,7 +91,7 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
 
             switch result {
             case .success(let data):
-                self.decodeGitHubUsersProfile(data: data, row: self.row)
+                self.decodeGitHubUsersProfile(data: data, id: self.id)
 
             case .failure(let error):
                 self.set(state: .failed(error))
@@ -115,9 +113,9 @@ extension ProfileViewModel {
     /// - Parameters:
     ///   - data: Raw JSON data.
     ///   - row: The profile row in relation with the Home screen table view row.
-    private func decodeGitHubUsersProfile(data: Data, row: Int) {
+    private func decodeGitHubUsersProfile(data: Data, id: Int) {
 
-        decode(data: data, row: row) { decodeResult in
+        decode(data: data, id: id) { decodeResult in
             switch decodeResult {
             case .success:
                 // Data successfully decoded and saved in cache. Proceed to load data from
@@ -136,23 +134,25 @@ extension ProfileViewModel {
     ///
     /// - Parameters:
     ///   - data: Raw JSON data.
-    ///   - row: The profile row in relation with the Home screen table view row.
+    ///   - id: The GitHub user ID.
     ///   - coreDataStack: The CoreData stack to use for saving the decoded result.
     ///   - completion: The closure to call with Result of failure or success.
-    private func decode(data: Data, row: Int, coreDataStack: CoreDataStack = CoreDataStack.shared, completion: @escaping (DecodingVoidResult)->()) {
+    private func decode(data: Data, id: Int, coreDataStack: CoreDataStack = CoreDataStack.shared, completion: @escaping (DecodingVoidResult)->()) {
 
         let context = coreDataStack.backgroundContext()
 
         context.perform {
-            // Save the note text for resaving after the decode, otherwise the note text will be
-            // overwritten.
-            let text = GitHubUser.fetchUser(atRow: row, context: context)?.notes?.text
+            // Save the old user profile for the note text and row to resave after decoding is done,
+            // otherwise the note text and row will be overwritten.
+            guard let oldUser = GitHubUser.fetchUser(byId: id, context: context) else {
+                fatalError("ProfileViewModel is misconfigured.")
+            }
 
             let decoder = JSONDecoderService<GitHubUser>(context: context, coreDataStack: coreDataStack)
 
-            let user: GitHubUser
+            let newUser: GitHubUser
             do {
-                user = try decoder.decode(data: data)
+                newUser = try decoder.decode(data: data)
 
             } catch {
                 completion(.failure(DecodingError.errorDescription(error.localizedDescription)))
@@ -160,11 +160,11 @@ extension ProfileViewModel {
             }
 
             // Resave the row data and the profile notes.
-            user.row = Int64(row)
-            if let text = text {
+            newUser.row = Int64(oldUser.row)
+            if let text = oldUser.notes?.text {
                 let notes = Notes(context: context)
                 notes.text = text
-                user.notes = notes
+                newUser.notes = notes
             }
 
             coreDataStack.saveContextAndWait(context)

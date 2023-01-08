@@ -152,7 +152,9 @@ extension HomeViewModel {
     /// - Parameters:
     ///   - row: The row number selected.
     func didSelectRowAt(row: Int) {
-        guard let user = GitHubUser.fetchUser(atRow: row) else {
+        let user = isSearchMode ? searchResult?[row] : GitHubUser.fetchUser(atRow: row)
+
+        guard let user = user else {
             fatalError("Home UITableView is misconfigured.")
         }
 
@@ -160,7 +162,7 @@ extension HomeViewModel {
             fatalError("Home UITableView is misconfigured.")
         }
         
-        let profileViewModel = ProfileViewModel(row: row, id: user.id, login: user.login)
+        let profileViewModel = ProfileViewModel(id: user.id, login: user.login)
         let profileView = ProfileView(viewModel: profileViewModel)
 
         SwiftUIPresenter.present(viewController: viewController, swiftUIView: profileView)
@@ -271,6 +273,7 @@ extension HomeViewModel {
 
         isSearchMode = false
         footerCellViewModel.isSearchMode = false
+        searchResult = nil
         hideStatus()
         refreshUI()
 
