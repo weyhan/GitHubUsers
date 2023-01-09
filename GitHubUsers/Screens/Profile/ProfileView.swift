@@ -23,8 +23,8 @@ struct ProfileView: View {
                 ProgressView()
             case .failed(let error):
                 ErrorView(message: error.localizedDescription)
-            case .loaded(let user):
-                ContentView(viewModel: viewModel, user: user)
+            case .loaded(let profile):
+                ContentView(viewModel: viewModel, profile: profile)
             }
         }
 }
@@ -39,21 +39,21 @@ struct ErrorView: View {
 
 struct ContentView: View {
     @ObservedObject var viewModel: ProfileViewModel
-    let user: GitHubUser
+    let profile: ProfileData
 
     var body: some View {
         NavigationView {
             VStack {
-                Header(avatar: AvatarImage(id: user.id, remoteUrlString: user.avatarUrl))
-                Followers(user: user)
+                Header(avatar: AvatarImage(id: profile.id, remoteUrlString: profile.avatarUrlString))
+                Followers(user: profile)
                     .padding(.horizontal)
-                UserDetails(user: user)
+                UserDetails(user: profile)
                     .padding()
-                NoteField(noteText: user.notes?.text ?? "")
+                NoteField(noteText: profile.notesText ?? "")
                     .environmentObject(viewModel)
                 Spacer()
             }
-            .navigationTitle(user.name ?? "Profile")
+            .navigationTitle(profile.name ?? "Profile")
             .navigationBarTitleDisplayMode(.inline)
         }
     }
@@ -91,7 +91,7 @@ struct Header: View {
 }
 
 struct Followers: View {
-    var user: GitHubUser
+    var user: ProfileData
 
     var body: some View {
         HStack {
@@ -103,7 +103,7 @@ struct Followers: View {
 }
 
 struct UserDetails: View {
-    var user: GitHubUser
+    var user: ProfileData
 
     var name: String { displayText(user.name) }
     var company: String { displayText(user.company) }

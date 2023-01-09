@@ -7,6 +7,32 @@
 
 import Foundation
 
+struct ProfileData {
+    let id: Int
+    let login: String
+    let name: String?
+    let avatarUrlString: String
+    let followers: Int?
+    let following: Int?
+    let company: String?
+    let blog: String?
+    let bio: String?
+    let notesText: String?
+
+    init(user: GitHubUser) {
+        id = Int(user.id)
+        login = user.login
+        name = user.name
+        avatarUrlString = user.avatarUrl
+        followers = user.followers as? Int
+        following = user.following as? Int
+        company = user.company
+        blog = user.blog
+        bio = user.blog
+        notesText = user.notes?.text
+    }
+}
+
 /// View model for the profile view.
 class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
     /// State of the profile view.
@@ -18,7 +44,7 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
         /// Failed to load data from remote.
         case failed(Error)
         /// Data loaded from remote.
-        case loaded(GitHubUser)
+        case loaded(ProfileData)
     }
 
     @Published private(set) var state: State = .idle
@@ -26,9 +52,8 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
     private var login: String
     private var id: Int
 
-    /// Profile data for user
-    var profile: GitHubUser! {
-        // Notify subscribers to the view state of successful loading the profile data.
+    /// Simplified user profile data set for display
+    var profile: ProfileData! {
         didSet {
             set(state: .loaded(self.profile))
         }
@@ -70,11 +95,16 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
 
     /// Method to load profile data from cache.
     private func loadCachedProfile() {
-        guard let user = GitHubUser.fetchUser(byId: id) else {
-            return
-        }
+        let context = CoreDataStack.shared.backgroundContext()
 
-        profile = user
+        context.perform { [weak self] in
+            guard let self = self else { return }
+            guard let user = GitHubUser.fetchUser(byId: self.id, context: context) else {
+                return
+            }
+
+            self.profile = ProfileData(user: user)
+        }
     }
 
     /// Method to load profile data from remote.
@@ -96,7 +126,6 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
             case .failure(let error):
                 self.set(state: .failed(error))
             }
-
         }
 
         let queue = NetworkQueue.shared
@@ -115,7 +144,9 @@ extension ProfileViewModel {
     ///   - row: The profile row in relation with the Home screen table view row.
     private func decodeGitHubUsersProfile(data: Data, id: Int) {
 
-        decode(data: data, id: id) { decodeResult in
+        decode(data: data, id: id) { [weak self] decodeResult in
+            guard let self = self else { return }
+
             switch decodeResult {
             case .success:
                 // Data successfully decoded and saved in cache. Proceed to load data from

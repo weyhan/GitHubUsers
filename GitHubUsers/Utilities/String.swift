@@ -18,12 +18,12 @@ func displayText(_ string: String?) -> String {
     string == nil || string?.isEmpty == true ? "-" : string!
 }
 
-/// Prepares optional `NSDecimalNumber` for display
+/// Prepares optional `Int` for display
 ///
-/// Optional `NSDecimalNumber` is unwrapped and converted to either the string content or to "-" if optional `NSDecimalNumber` is nil.
+/// Optional `Int` is unwrapped and converted to either the string content or to "-" if optional `Int` is nil.
 /// - Parameters:
 ///   - string: An optional string that will be displayed.
 /// - Returns: String ready for display on UI.
-func displayText(_ decimalNumber: NSDecimalNumber?) -> String {
-    decimalNumber != nil ? "\(decimalNumber!)" : "-"
+func displayText(_ integer: Int?) -> String {
+    integer != nil ? "\(integer!)" : "-"
 }
