@@ -19,15 +19,20 @@ class AvatarImage: ObservableObject {
 
     private let id: Int
     private let remoteUrl: URL?
+
+    private var isColorInverted: Bool
     private var fileDownloadTask: NetworkDownloadTask? = nil
 
-    convenience init(id: Int64, remoteUrlString: String) {
-        self.init(id: Int(id), remoteUrlString: remoteUrlString)
-    }
-
-    init(id: Int, remoteUrlString: String) {
+    /// Initializer for `AvatarImage`
+    ///
+    /// - Parameters:
+    ///   - id: The GitHub user ID.
+    ///   - remoteUrlString: A string representation of a URL pointing to GitHub user's avatar image.
+    ///   - invertColor: The flag to indicate if the image should be color inverted on the display. Defaults to false.
+    init(id: Int, remoteUrlString: String, invertColor: Bool = false) {
         self.id = id
         self.remoteUrl = URL(string: remoteUrlString)
+        self.isColorInverted = invertColor
     }
 
     /// Load avatar image.
@@ -43,7 +48,17 @@ class AvatarImage: ObservableObject {
             return
         }
 
-        self.image = image
+        set(image: image)
+    }
+
+    /// Method to set loaded image to image property.
+    ///
+    /// The image is color inverted if the `isColorInverted` flag is set to `true`.
+    /// - Parameters:
+    ///   - image: The `UIImage` object of the GitHub user's avatar loaded from cache.
+    private func set(image: UIImage?) {
+        guard let image = image else { return }
+        self.image = isColorInverted ? image.invertColor() : image
     }
 
     /// Download avatar image.
@@ -62,8 +77,7 @@ class AvatarImage: ObservableObject {
 
             switch result {
             case .success:
-                guard let image = Cache.loadCachedImage(forId: self.id) else { return }
-                self.image = image
+                self.set(image: Cache.loadCachedImage(forId: self.id))
 
             case .failure(_):
                 self.error = AvatarImageError.errorDescription("Failed to download avatar.")
@@ -77,7 +91,7 @@ class AvatarImage: ObservableObject {
         queue.resume()
     }
 
-    /// Cancel download task.
+    /// Method to cancel download task if task is still active.
     func cancel() {
         fileDownloadTask?.cancel()
         fileDownloadTask = nil

@@ -43,13 +43,16 @@ class HomeCellViewModel {
 
     /// Initializes view model.
     init(id: Int64, login: String, details: String, avatarUrl: String, row: Int64) {
-        self.id = Int(id)
+        let id = Int(id)
+        let row = Int(row)
+
+        self.id = id
         self.login = login
         self.details = details
         self.avatarUrl = avatarUrl
-        self.row = Int(row)
+        self.row = row
 
-        self.avatar = AvatarImage(id: id, remoteUrlString: avatarUrl)
+        self.avatar = AvatarImage(id: id, remoteUrlString: avatarUrl, invertColor: isAvatarColorInverted)
     }
 
     /// Boolean to indicate if the avatar image color should be inverted.
