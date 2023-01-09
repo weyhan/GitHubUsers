@@ -115,8 +115,7 @@ extension HomeViewModel {
 
     /// Make view model for cell.
     private func makeCellViewModel(_ row: Int, user: GitHubUser) -> HomeCellViewModelProtocol? {
-
-        switch viewModelType(forRowAt: row) {
+        switch viewModelType(forUser: user) {
         case .normal:
             return NormalCellViewModel(id: user.id, login: user.login, details: user.type, avatarUrl: user.avatarUrl, row: user.row)
 
@@ -135,13 +134,12 @@ extension HomeViewModel {
     /// - Does the GitHub user have a note attached to their records.
     /// - Should the profile image be inverted.
     /// Each of the criteria will determine if the cell is with or without ornament and if yes it's of which types.
-    private func viewModelType(forRowAt row: Int) -> HomeCellType {
-        // TODO: Get from persistent store if user have note stored.
-        //        let hasNote = false
-        //
-        //        if hasNote {
-        //            return .note
-        //        }
+    private func viewModelType(forUser user: GitHubUser) -> HomeCellType {
+        let isNoted = user.notes?.text != nil
+
+        if isNoted {
+            return .note
+        }
 
         return .normal
     }
