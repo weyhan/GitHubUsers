@@ -52,6 +52,15 @@ extension HomeViewController {
         tableView.reloadData()
     }
 
+    /// Reloads the table view cell at a certain row.
+    ///
+    /// - Parameters:
+    ///   - rowAt: Row number of the cell to update.
+    func refresh(rowAt row: Int) {
+        if !viewModel.isSearchMode {
+            tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .none)
+        }
+    }
 }
 
 // MARK: - Notification Extension

@@ -16,6 +16,7 @@ protocol HomeViewDelegate: AnyObject {
     func showStatus(text: String)
     func hideStatus()
     func refreshUI()
+    func refresh(rowAt row: Int)
 }
 
 /// View model for Home screen.
@@ -161,6 +162,7 @@ extension HomeViewModel {
         }
         
         let profileViewModel = ProfileViewModel(id: user.id, login: user.login)
+        profileViewModel.homeViewModel = delegate
         let profileView = ProfileView(viewModel: profileViewModel)
 
         SwiftUIPresenter.present(viewController: viewController, swiftUIView: profileView)

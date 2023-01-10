@@ -19,6 +19,8 @@ struct ProfileData {
     let bio: String?
     let notesText: String?
 
+    let row: Int
+
     init(user: GitHubUser) {
         id = Int(user.id)
         login = user.login
@@ -30,6 +32,8 @@ struct ProfileData {
         blog = user.blog
         bio = user.blog
         notesText = user.notes?.text
+
+        row = Int(user.row)
     }
 }
 
@@ -54,6 +58,8 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
     private var id: Int
 
     private var dataTask: NetworkDataTask? = nil
+
+    var homeViewModel: HomeViewDelegate? = nil
     
     /// Simplified user profile data set for display
     var profile: ProfileData! {
@@ -102,6 +108,7 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
     func onDissapear() {
         dataTask?.cancel()
         dataTask = nil
+        homeViewModel?.refresh(rowAt: profile.row)
     }
 
     /// Method to load profile data from cache.
