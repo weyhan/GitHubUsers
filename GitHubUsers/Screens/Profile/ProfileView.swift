@@ -38,13 +38,32 @@ struct ErrorView: View {
     }
 }
 
+struct StatusView: View {
+    var message: String
+
+    var body: some View {
+        Text(message)
+            .font(.caption)
+            .edgesIgnoringSafeArea(.horizontal)
+            .frame(maxWidth: .infinity)
+            .padding(4)
+            .foregroundColor(.red)
+            .background(Color.white)
+    }
+}
+
 struct ContentView: View {
     @ObservedObject var viewModel: ProfileViewModel
     let profile: ProfileData
 
     @State var isNotesFieldActive = false
+    @State var statusMessage = ""
 
     var body: some View {
+        if !statusMessage.isEmpty {
+            StatusView(message: statusMessage)
+                .transition(.move(edge: .top))
+        }
         NavigationView {
             ScrollViewReader { value in
                 ScrollView {
@@ -56,6 +75,7 @@ struct ContentView: View {
                             .padding()
                         NoteField(noteText: profile.notesText ?? "", isNotesFieldActive: $isNotesFieldActive)
                             .environmentObject(viewModel)
+
                         Spacer()
                     }
                     .navigationTitle(profile.name ?? "Profile")
@@ -72,6 +92,11 @@ struct ContentView: View {
                         // scroll to top of screen.
                         let (id, anchor) = activeState ? (1, UnitPoint.bottom) : (0, UnitPoint.top)
                         value.scrollTo(id, anchor: anchor)
+                    }
+                }
+                .onReceive(viewModel.$statusMessage) { message in
+                    withAnimation(.easeInOut(duration: 0.5)) {
+                        statusMessage = message ?? ""
                     }
                 }
             }
@@ -146,7 +171,7 @@ struct UserDetails: View {
         }
         .padding()
         .background(
-            RoundedRectangle(cornerRadius: 8)
+            RoundedRectangle(cornerRadius: 3)
                 .stroke(.gray, lineWidth: 0.5)
                 .shadow(radius: 3)
         )
@@ -169,7 +194,7 @@ struct NoteField: View {
                     .clipped()
                     .padding(4)
                     .overlay(
-                        RoundedRectangle(cornerRadius: 8)
+                        RoundedRectangle(cornerRadius: 3)
                             .stroke(.gray, lineWidth: 0.5)
                             .shadow(radius: 3)
                     )

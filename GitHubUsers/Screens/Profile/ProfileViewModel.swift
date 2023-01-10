@@ -48,6 +48,7 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
     }
 
     @Published private(set) var state: State = .idle
+    @Published private(set) var statusMessage: String? = nil
 
     private var login: String
     private var id: Int
