@@ -10,6 +10,7 @@ import SwiftUI
 protocol ProfileViewModelProtocol: ObservableObject {
     func loadData()
     func save(notes: String)
+    func onDissapear()
 }
 
 struct ProfileView: View {
@@ -74,6 +75,9 @@ struct ContentView: View {
                     }
                 }
             }
+        }
+        .onDisappear {
+            viewModel.onDissapear()
         }
     }
 }

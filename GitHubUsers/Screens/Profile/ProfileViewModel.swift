@@ -52,6 +52,8 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
     private var login: String
     private var id: Int
 
+    private var dataTask: NetworkDataTask? = nil
+    
     /// Simplified user profile data set for display
     var profile: ProfileData! {
         didSet {
@@ -73,6 +75,12 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
         DispatchQueue.main.async { self.state = state }
     }
 
+    /// Method to trigger loading profile data from remote.
+    func loadData() {
+        set(state: .loading)
+        loadGitHubUserProfile(login: login)
+    }
+
     /// Save notes on profile.
     ///
     /// If `notes` is empty string, the note entry is removed instead.
@@ -87,10 +95,12 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
         }
     }
 
-    /// Method to trigger loading profile data from remote.
-    func loadData() {
-        set(state: .loading)
-        loadGitHubUserProfile(login: login)
+    /// Method to cleanup hanging `ProfileViewModel`.
+    ///
+    /// Network task will be canceled if one is active.
+    func onDissapear() {
+        dataTask?.cancel()
+        dataTask = nil
     }
 
     /// Method to load profile data from cache.
@@ -127,6 +137,8 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
                 self.set(state: .failed(error))
             }
         }
+
+        self.dataTask = dataTask
 
         let queue = NetworkQueue.shared
         queue.enqueue(networkJob: dataTask)
