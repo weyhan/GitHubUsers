@@ -38,6 +38,7 @@ class HomeViewController: UIViewController, HomeViewDelegate, SwiftUIPresentable
         searchController.searchBar.autocorrectionType = .no
         searchController.searchBar.autocapitalizationType = .none
         navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
     }
 
 }

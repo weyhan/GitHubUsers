@@ -13,6 +13,8 @@ class NormalTableViewCell: HomeTableViewCell, HomeTableViewCellProtocol {
     @IBOutlet var details: UILabel!
     @IBOutlet var avatarImageView: UIImageView!
 
+    @IBOutlet var outerBox: UIView!
+
     /// Setup UITableViewCell with a view model.
     ///
     /// This method should only be called from the table view cell for row delegate method in `UITableView`.`
@@ -33,6 +35,8 @@ class NormalTableViewCell: HomeTableViewCell, HomeTableViewCellProtocol {
         }
 
         avatar.loadAvatarFile()
+
+        outerBox.layer.borderColor = UIColor.gray.cgColor
     }
 
 }

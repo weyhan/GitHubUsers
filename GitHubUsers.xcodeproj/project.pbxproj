@@ -10,6 +10,7 @@
 		6F1632702950B82200880B81 /* NetworkDataTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F16326F2950B82200880B81 /* NetworkDataTask.swift */; };
 		6F1632722950B84C00880B81 /* NetworkTasksSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1632712950B84C00880B81 /* NetworkTasksSupport.swift */; };
 		6F1E5A1A296D3B2100462F85 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1E5A19296D3B2100462F85 /* View.swift */; };
+		6F1E5A77296DDB3A00462F85 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F1E5A76296DDB3900462F85 /* QuartzCore.framework */; };
 		6F2BD56B295A0A710053B66A /* FooterTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2BD56A295A0A710053B66A /* FooterTableViewCell.swift */; };
 		6F2BD56D295AF7530053B66A /* FooterCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2BD56C295AF7530053B66A /* FooterCellViewModel.swift */; };
 		6F2BD595295C73CA0053B66A /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2BD594295C73CA0053B66A /* FileManager.swift */; };
@@ -67,6 +68,7 @@
 		6F16326F2950B82200880B81 /* NetworkDataTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkDataTask.swift; sourceTree = "<group>"; };
 		6F1632712950B84C00880B81 /* NetworkTasksSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTasksSupport.swift; sourceTree = "<group>"; };
 		6F1E5A19296D3B2100462F85 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
+		6F1E5A76296DDB3900462F85 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		6F2BD56A295A0A710053B66A /* FooterTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterTableViewCell.swift; sourceTree = "<group>"; };
 		6F2BD56C295AF7530053B66A /* FooterCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterCellViewModel.swift; sourceTree = "<group>"; };
 		6F2BD594295C73CA0053B66A /* FileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F1E5A77296DDB3A00462F85 /* QuartzCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -142,12 +145,21 @@
 			path = NetworkTasks;
 			sourceTree = "<group>";
 		};
+		6F1E5A75296DDB3800462F85 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6F1E5A76296DDB3900462F85 /* QuartzCore.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		6F7416D2294B51C0009B5328 = {
 			isa = PBXGroup;
 			children = (
 				6F7416DD294B51C0009B5328 /* GitHubUsers */,
 				6F7416F7294B51C1009B5328 /* GitHubUsersTests */,
 				6F7416DC294B51C0009B5328 /* Products */,
+				6F1E5A75296DDB3800462F85 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
