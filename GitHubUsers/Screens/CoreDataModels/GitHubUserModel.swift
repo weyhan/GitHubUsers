@@ -261,11 +261,15 @@ extension GitHubUser {
 
     /// Saves profile notes to cache.
     ///
+    /// The save notes convenience method is non blocking. The completion closure is where any cleanups or next action trigger be placed to ensure
+    /// any they executes after the save operation has completed.
+    ///
+    /// - Note: If the corrosponding user is not found, the save operation will bail without triggering the completion closure.
     /// - Parameters:
     ///   - notes: The note text to save.
     ///   - forId: Users GitHub ID.
-    static func save(notes text: String, forId id: Int) {
-
+    ///   - completion: A closure that takes no parameter and returns `Void`.
+    static func save(notes text: String, forId id: Int, completion: (()->())? = nil) {
         let coreDataStack = CoreDataStack.shared
         let context = coreDataStack.backgroundContext()
 
@@ -281,19 +285,24 @@ extension GitHubUser {
 
             } else {
                 user.notes?.text = text
-
             }
 
             coreDataStack.saveContextAndWait(context)
+            completion?()
         }
 
     }
 
     /// Remove profile notes on cache.
     ///
+    /// The remove notes convenience method is non blocking. The completion closure is where any cleanups or next action trigger be placed to ensure
+    /// any they executes after the remove operation has completed.
+    ///
+    /// - Note: If the corrosponding user is not found or the user have no stored notes, the remove operation will bail without triggering the completion closure.
     /// - Parameters:
     ///   - notesForId: The GitHub user ID to remove notes from.
-    static func remove(notesForId id: Int) {
+    ///   - completion: A closure that takes no parameter and returns `Void`.
+    static func remove(notesForId id: Int, completion: (()->())? = nil) {
 
         let coreDataStack = CoreDataStack.shared
         let context = coreDataStack.backgroundContext()
@@ -305,6 +314,7 @@ extension GitHubUser {
 
             context.delete(notes)
             coreDataStack.saveContextAndWait(context)
+            completion?()
         }
 
     }

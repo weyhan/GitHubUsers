@@ -68,6 +68,26 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
         }
     }
 
+    /// A String property to keep changes to notes in profile from the UI.
+    var newNotesText: String? = nil
+
+    /// Boolean that indicates if notes had changed.
+    var notesTextChanged: Bool {
+        // If newNotesText is nil, notes text had not been changed.
+        guard let newNotesText else {
+            return false
+        }
+
+        // When notesText in persistent store is nil, it is equivalent to an empty string. Therefore
+        // nil valued notesText is converted to an empty string before comparing to newNotesText.
+        return newNotesText != (profile.notesText ?? "")
+    }
+
+    /// ProfileViewModel initializer.
+    ///
+    /// - Parameters:
+    ///   - id: The GitHub user ID.
+    ///   - login: The GitHub user login.
     init(id: Int64, login: String) {
         self.login = login
         self.id = Int(id)
@@ -79,7 +99,7 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
     /// - Parameters:
     ///   - state: The state of the profile view of type `State`
     private func set(state: State) {
-        DispatchQueue.main.async { self.state = state }
+        DispatchQueue.main.async { [weak self] in self?.state = state }
     }
 
     /// Method to trigger loading profile data from remote.
@@ -93,22 +113,31 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
     /// If `notes` is empty string, the note entry is removed instead.
     /// - Parameters:
     ///   - notes: The text to be saved in the cache.
-    func save(notes: String) {
+    func save(notes: String, completion: (()->())? = nil) {
         if notes.isEmpty {
-            GitHubUser.remove(notesForId: id)
+            GitHubUser.remove(notesForId: id, completion: completion)
 
         } else {
-            GitHubUser.save(notes: notes, forId: id)
+            GitHubUser.save(notes: notes, forId: id, completion: completion)
         }
     }
 
-    /// Method to cleanup hanging `ProfileViewModel`.
+    /// Method to cleanup for `ProfileViewModel`.
     ///
-    /// Network task will be canceled if one is active.
+    /// Perform clean up:
+    /// - Network task will be canceled if one is active.
+    /// - Save unsaved notes changes.
     func onDissapear() {
         dataTask?.cancel()
         dataTask = nil
-        homeViewModel?.refresh(rowAt: profile.row)
+
+        if notesTextChanged {
+            save(notes: newNotesText ?? "") {
+                DispatchQueue.main.async {
+                    self.homeViewModel?.refresh(rowAt: self.profile.row)
+                }
+            }
+        }
     }
 
     /// Method to load profile data from cache.

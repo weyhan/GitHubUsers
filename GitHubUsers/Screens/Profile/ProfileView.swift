@@ -8,8 +8,10 @@
 import SwiftUI
 
 protocol ProfileViewModelProtocol: ObservableObject {
+    var newNotesText: String? { get set }
+    var notesTextChanged: Bool { get }
+
     func loadData()
-    func save(notes: String)
     func onDissapear()
 }
 
@@ -198,12 +200,10 @@ struct NoteField: View {
                             .stroke(.gray, lineWidth: 0.5)
                             .shadow(radius: 3)
                     )
+                    .onChange(of: noteText) { newText in
+                        viewModel.newNotesText = newText
+                    }
                     .onTapGesture { } // Override parent view tap gesture when tap on TextEditor.
-                Button("Save") {
-                    viewModel.save(notes: noteText)
-                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                    isNotesFieldActive = false
-                }
             }
             .onReceive(keyboardPublisher) { isShown in
                 isNotesFieldActive = isShown
