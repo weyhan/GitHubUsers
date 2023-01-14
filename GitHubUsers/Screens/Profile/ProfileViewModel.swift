@@ -142,11 +142,11 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
 
     /// Method to load profile data from cache.
     private func loadCachedProfile() {
-        let context = CoreDataStack.shared.backgroundContext()
+        let context = CoreDataStack.shared.mainContext
 
         context.perform { [weak self] in
-            guard let self = self else { return }
-            guard let user = GitHubUser.fetchUser(byId: self.id, context: context) else {
+            guard let self = self,
+                  let user = GitHubUser.fetchUser(byId: self.id, context: context) else {
                 return
             }
 
