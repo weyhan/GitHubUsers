@@ -40,7 +40,7 @@ class GitHubUser: NSManagedObject, Decodable {
     @NSManaged var blog: String?
     @NSManaged var location: String?
     @NSManaged var email: String?
-    @NSManaged var hireable: String?
+    @NSManaged var hireable: NSNumber?
     @NSManaged var bio: String?
     @NSManaged var twitterUsername: String?
     @NSManaged var publicRepos: NSDecimalNumber?
@@ -130,7 +130,7 @@ class GitHubUser: NSManagedObject, Decodable {
         self.blog = try container.decodeIfPresent(String.self, forKey: .blog)
         self.location = try container.decodeIfPresent(String.self, forKey: .location)
         self.email = try container.decodeIfPresent(String.self, forKey: .email)
-        self.hireable = try container.decodeIfPresent(String.self, forKey: .hireable)
+        self.hireable = try container.decodeIfPresent(Bool.self, forKey: .hireable) as? NSNumber
         self.bio = try container.decodeIfPresent(String.self, forKey: .bio)
         self.twitterUsername = try container.decodeIfPresent(String.self, forKey: .twitterUsername)
         self.publicRepos = try container.decodeIfPresent(Decimal.self, forKey: .publicRepos) as NSDecimalNumber?
