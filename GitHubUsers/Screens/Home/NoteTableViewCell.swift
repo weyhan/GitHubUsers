@@ -36,7 +36,7 @@ class NoteTableViewCell: HomeTableViewCell, HomeTableViewCellProtocol {
 
         avatar.loadAvatarFile()
 
-        outerBox.layer.borderColor = UIColor.gray.cgColor
+        outerBox.layer.borderColor = UIColor(named: "borderColor")?.cgColor
     }
 
 }

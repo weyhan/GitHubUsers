@@ -31,16 +31,33 @@ class HomeViewController: UIViewController, HomeViewDelegate, SwiftUIPresentable
         tableView.dataSource = self
 
         viewModel.delegate = self
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
 
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Search Users"
-        searchController.searchBar.autocorrectionType = .no
-        searchController.searchBar.autocapitalizationType = .none
+
+        let searchBar = searchController.searchBar
+        let searchTextField = searchBar.searchTextField
+
+        let headerSecondaryForegroundColor = UIColor(named: "headerSecondaryForegroundColor") ?? .lightGray
+
+        let placeholderAttribute = [ NSAttributedString.Key.foregroundColor : headerSecondaryForegroundColor ]
+        let attributedPlaceholder = NSAttributedString(string: "Search Users", attributes: placeholderAttribute)
+        searchTextField.attributedPlaceholder = attributedPlaceholder
+
+        searchTextField.backgroundColor = UIColor(named: "headerContraColor")
+        searchTextField.textColor = UIColor(named: "headerForegroundColor")
+        searchTextField.leftView?.tintColor = UIColor(named: "headerForegroundColor")
+
+        searchBar.autocorrectionType = .no
+        searchBar.autocapitalizationType = .none
+
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
     }
-
 }
 
 // MARK: - Data
