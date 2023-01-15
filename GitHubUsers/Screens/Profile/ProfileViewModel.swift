@@ -171,7 +171,9 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
                 self.decodeGitHubUsersProfile(data: data, id: self.id)
 
             case .failure(let error):
-                self.set(state: .failed(error))
+                if error != .cancelled {
+                    self.set(state: .failed(error))
+                }
             }
         }
 
