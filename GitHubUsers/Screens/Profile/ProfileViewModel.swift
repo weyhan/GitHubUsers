@@ -48,7 +48,7 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
         /// Failed to load data from remote.
         case failed(Error)
         /// Data loaded from remote.
-        case loaded(ProfileData)
+        case loaded
     }
 
     @Published private(set) var state: State = .idle
@@ -62,11 +62,7 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
     var homeViewModel: HomeViewDelegate? = nil
     
     /// Simplified user profile data set for display
-    var profile: ProfileData! {
-        didSet {
-            set(state: .loaded(self.profile))
-        }
-    }
+    var profile: ProfileData!
 
     /// A String property to keep changes to notes in profile from the UI.
     var newNotesText: String? = nil
@@ -104,7 +100,14 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
 
     /// Method to trigger loading profile data from remote.
     func loadData() {
-        set(state: .loading)
+        guard let user = loadCachedProfile() else { return }
+        profile = ProfileData(user: user)
+
+        // If the name property is nil in cached profile, that means the profile data was never
+        // downloaded. Therefore, display loading placeholder. Otherwise, use cached profile to
+        // display on profile screen while fresh data is loaded in the background.
+        set(state: profile.name == nil ? .loading : .loaded)
+
         loadGitHubUserProfile(login: login)
     }
 
@@ -139,19 +142,11 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
             }
         }
     }
-
     /// Method to load profile data from cache.
-    private func loadCachedProfile() {
+
+    private func loadCachedProfile() -> GitHubUser? {
         let context = CoreDataStack.shared.mainContext
-
-        context.perform { [weak self] in
-            guard let self = self,
-                  let user = GitHubUser.fetchUser(byId: self.id, context: context) else {
-                return
-            }
-
-            self.profile = ProfileData(user: user)
-        }
+        return GitHubUser.fetchUser(byId: self.id, context: context)
     }
 
     /// Method to load profile data from remote.
@@ -202,7 +197,9 @@ extension ProfileViewModel {
             case .success:
                 // Data successfully decoded and saved in cache. Proceed to load data from
                 // saved cached data for display.
-                self.loadCachedProfile()
+                guard let user = self.loadCachedProfile() else { return }
+                self.profile = ProfileData(user: user)
+                self.set(state: .loaded)
 
             case .failure(_):
                 let error = DecodingError.errorDescription("Decode JSON Error")

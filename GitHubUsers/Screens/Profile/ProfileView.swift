@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Shimmer
 
 protocol ProfileViewModelProtocol: ObservableObject {
     var newNotesText: String? { get set }
@@ -23,11 +24,13 @@ struct ProfileView: View {
         case .idle:
             Color.clear.onAppear(perform: viewModel.loadData)
         case .loading:
-            ProgressView()
+            ContentView(viewModel: viewModel, profile: viewModel.profile)
+                .redacted(reason: .placeholder)
+                .shimmering()
         case .failed(let error):
             ErrorView(message: error.localizedDescription)
-        case .loaded(let profile):
-            ContentView(viewModel: viewModel, profile: profile)
+        case .loaded:
+            ContentView(viewModel: viewModel, profile: viewModel.profile)
         }
     }
 }
@@ -133,6 +136,7 @@ struct Header: View {
             self.setBackgroundColor()
         }
         .id(0)
+        .unredacted()
     }
 
     private func setBackgroundColor() {
@@ -142,33 +146,50 @@ struct Header: View {
 
 struct Followers: View {
     var user: ProfileData
+    @Environment(\.redactionReasons) var redactionReasons
+
+    var isPlaceholder: Bool { redactionReasons == .placeholder && user.name == nil }
+
+    var placeholderFollowers: String { "followers: 999999" }
+    var placeholderFollowing: String { "following: 999999" }
+
+    var displayFollowers: String { "followers: \(displayText(user.followers))" }
+    var displayFollowing: String { "following: \(displayText(user.following))" }
 
     var body: some View {
         HStack {
-            Text("followers: \(displayText(user.followers))")
-            Spacer()
-            Text("following: \(displayText(user.following))")
+                Text(isPlaceholder ? placeholderFollowers : displayFollowers)
+                Spacer()
+                Text(isPlaceholder ? placeholderFollowing : displayFollowing)
         }
     }
 }
 
 struct UserDetails: View {
     var user: ProfileData
+    @Environment(\.redactionReasons) var redactionReasons
 
-    var name: String { displayText(user.name) }
-    var company: String { displayText(user.company) }
-    var blog: String { displayText(user.blog) }
-    var bio: String { displayText(user.bio) }
+    var isPlaceholder: Bool { redactionReasons == .placeholder && user.name == nil }
+
+    var placeholderName: String { "name: Lorem ipsum dolor" }
+    var placeholderCompany: String { "company: Lorem ipsum dolor" }
+    var placeholderBlog: String { "blog: Lorem ipsum dolor sit." }
+    var placeholderBio: String { "bio: Lorem ipsum dolor sit amet." }
+
+    var displayName: String { "name: \(displayText(user.name))" }
+    var displayCompany: String { "company: \(displayText(user.company))" }
+    var displayBlog: String { "blog: \(displayText(user.blog))" }
+    var displayBio: String { "bio: \(displayText(user.bio))" }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("name: \(name)")
+            Text(isPlaceholder ? placeholderName : displayName)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Text("company: \(company)")
+            Text(isPlaceholder ? placeholderCompany : displayCompany)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Text("blog: \(blog)")
+            Text(isPlaceholder ? placeholderBlog : displayBlog)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Text("bio: \(bio)")
+            Text(isPlaceholder ? placeholderBio : displayBio)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding()
@@ -211,6 +232,7 @@ struct NoteField: View {
         }
         .id(1)
         .padding()
+        .unredacted()
     }
 }
 

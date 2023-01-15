@@ -30,6 +30,7 @@
 		6F7416EE294B51C1009B5328 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F7416EC294B51C1009B5328 /* LaunchScreen.storyboard */; };
 		6F741714294B536C009B5328 /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F741713294B536C009B5328 /* Home.storyboard */; };
 		6F741716294B5A71009B5328 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F741715294B5A71009B5328 /* HomeViewController.swift */; };
+		6F758E5E2973CDA6004E90A3 /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 6F758E5D2973CDA6004E90A3 /* Shimmer */; };
 		6F908766294CBB48006E0B75 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F908765294CBB48006E0B75 /* ProfileView.swift */; };
 		6F908769294DCB3C006E0B75 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F908768294DCB3C006E0B75 /* UIImage.swift */; };
 		6F90876C294E42F7006E0B75 /* NetworkQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F90876B294E42F7006E0B75 /* NetworkQueue.swift */; };
@@ -91,6 +92,7 @@
 		6F7416F4294B51C1009B5328 /* GitHubUsersTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GitHubUsersTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F741713294B536C009B5328 /* Home.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Home.storyboard; sourceTree = "<group>"; };
 		6F741715294B5A71009B5328 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		6F758E632973CE82004E90A3 /* Shimmer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shimmer.swift; sourceTree = "<group>"; };
 		6F908765294CBB48006E0B75 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		6F908768294DCB3C006E0B75 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		6F90876B294E42F7006E0B75 /* NetworkQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkQueue.swift; sourceTree = "<group>"; };
@@ -120,6 +122,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F758E5E2973CDA6004E90A3 /* Shimmer in Frameworks */,
 				6F1E5A77296DDB3A00462F85 /* QuartzCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -292,6 +295,7 @@
 			isa = PBXGroup;
 			children = (
 				6FEEB99B294F6F9F004E5ED4 /* KodecoCoreDataStack.swift */,
+				6F758E632973CE82004E90A3 /* Shimmer.swift */,
 			);
 			path = 3rdParty;
 			sourceTree = "<group>";
@@ -332,6 +336,9 @@
 			dependencies = (
 			);
 			name = GitHubUsers;
+			packageProductDependencies = (
+				6F758E5D2973CDA6004E90A3 /* Shimmer */,
+			);
 			productName = GitHubUsers;
 			productReference = 6F7416DB294B51C0009B5328 /* GitHubUsers.app */;
 			productType = "com.apple.product-type.application";
@@ -382,6 +389,9 @@
 				Base,
 			);
 			mainGroup = 6F7416D2294B51C0009B5328;
+			packageReferences = (
+				6F758E5C2973CDA6004E90A3 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */,
+			);
 			productRefGroup = 6F7416DC294B51C0009B5328 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -739,6 +749,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6F758E5C2973CDA6004E90A3 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/markiv/SwiftUI-Shimmer";
+			requirement = {
+				kind = exactVersion;
+				version = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6F758E5D2973CDA6004E90A3 /* Shimmer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6F758E5C2973CDA6004E90A3 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */;
+			productName = Shimmer;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		6F7416E7294B51C0009B5328 /* GitHubUsers.xcdatamodeld */ = {
