@@ -83,8 +83,6 @@ struct ContentView: View {
 
                         Spacer()
                     }
-                    .navigationTitle(profile.name ?? "Profile")
-                    .navigationBarTitleDisplayMode(.inline)
                 }
                 .onTapGesture {
                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
@@ -105,7 +103,9 @@ struct ContentView: View {
                     }
                 }
             }
+            .background(Color(UIColor(named: "backgroundColor")!))
         }
+        .navigationBarTitle(profile.name ?? "Profile", displayMode: .inline)
         .onDisappear {
             viewModel.onDissapear()
         }
@@ -195,8 +195,9 @@ struct UserDetails: View {
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 3)
-                .stroke(.gray, lineWidth: 0.5)
-                .shadow(radius: 3)
+                .stroke(Color(UIColor(named: "borderColor")!), lineWidth: 1)
+                .shadow(radius: 5)
+                .background(Color(UIColor(named: "backgroundContraColor")!))
         )
     }
 }
@@ -213,13 +214,16 @@ struct NoteField: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 TextEditor(text: $noteText)
                     .frame(height: 180)
-                    .cornerRadius(8.5)
+                    .cornerRadius(3)
                     .clipped()
-                    .padding(4)
-                    .overlay(
+                    .background(Color(UIColor(named: "backgroundContraColor")!))
+                    .foregroundColor(Color(UIColor(named: "foregroundColor")!))
+                    .padding(2)
+                    .background(
                         RoundedRectangle(cornerRadius: 3)
-                            .stroke(.gray, lineWidth: 0.5)
-                            .shadow(radius: 3)
+                            .stroke(Color(UIColor(named: "borderColor")!), lineWidth: 1)
+                            .shadow(radius: 5)
+                            .background(Color(UIColor(named: "backgroundContraColor")!))
                     )
                     .onChange(of: noteText) { newText in
                         viewModel.newNotesText = newText
