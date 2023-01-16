@@ -226,7 +226,7 @@ extension GitHubUserTests {
     /// Test update individual GitHubUser profile.
     ///
     /// Update GitHub user profile cached from GitHub user list API with GitHub user profile from individual user profile API.
-    func testUpdateGitHubUersWithIndividualProfileJSON() {
+    func testUpdateGitHubUersWithIndividualProfileJSON() throws {
         // Setup for test.
         // =================================================
         // Load mock data from GitHub user list API.
@@ -292,6 +292,44 @@ extension GitHubUserTests {
         XCTAssertTrue(fetched2[0].login == "mojombo-changed", "Unexpected update result")
     }
 
+    /// Test decode individual GitHubUser profile where `hireable` is not `null`.
+    ///
+    /// Decode GitHub user profile of user from individual user profile API where `hireable` is not `null`.
+    func testDecodeHireable() throws {
+        guard let data = loadBundleFile(withFilename: "testDecodeHireable", extension: "json") else {
+            XCTFail("Failed to load test data; Decoding JSON test could not proceed.")
+            return
+        }
+
+        let context = coreDataStack.backgroundContext()
+
+        let jsonService = JSONDecoderService<GitHubUser>(context: context, coreDataStack: coreDataStack)
+        let decoded = try? jsonService.decode(data: data)
+
+        XCTAssertNotNil(decoded)
+
+        coreDataStack.saveContextAndWait(context)
+
+        let request = GitHubUser.fetchRequest()
+
+        let fetched: [GitHubUser]?
+        do {
+            fetched = try context.fetch(request)
+            XCTAssertNotNil(fetched)
+
+        } catch let error as NSError {
+            print("Fetch error: \(error) description: \(error.userInfo)")
+            XCTFail("Exception while fetching GitUserData")
+            return
+        }
+
+        guard let fetched = fetched else {
+            return
+        }
+
+        XCTAssertTrue(fetched.count == 1, "Unexpected decoded result")
+        XCTAssert(fetched[0].hireable?.boolValue == true, "Unexpected decoded result")
+    }
 }
 
 // MARK: - Mockups

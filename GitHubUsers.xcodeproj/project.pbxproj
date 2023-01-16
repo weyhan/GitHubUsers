@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6F02DE9D2975AEBD0099D6EF /* testDecodeHireable.json in Resources */ = {isa = PBXBuildFile; fileRef = 6F02DE9C2975AEBD0099D6EF /* testDecodeHireable.json */; };
 		6F1632702950B82200880B81 /* NetworkDataTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F16326F2950B82200880B81 /* NetworkDataTask.swift */; };
 		6F1632722950B84C00880B81 /* NetworkTasksSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1632712950B84C00880B81 /* NetworkTasksSupport.swift */; };
 		6F1E5A1A296D3B2100462F85 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1E5A19296D3B2100462F85 /* View.swift */; };
@@ -66,6 +67,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6F02DE9C2975AEBD0099D6EF /* testDecodeHireable.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = testDecodeHireable.json; sourceTree = "<group>"; };
 		6F16326F2950B82200880B81 /* NetworkDataTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkDataTask.swift; sourceTree = "<group>"; };
 		6F1632712950B84C00880B81 /* NetworkTasksSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTasksSupport.swift; sourceTree = "<group>"; };
 		6F1E5A19296D3B2100462F85 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
@@ -308,6 +310,7 @@
 				6F98B54729506373007DE4C5 /* testDecoder_FailCase.json */,
 				6FEB0BDC2962F55800123972 /* testUpdateGitHubUersWithIndividualProfileData-1.json */,
 				6FEB0BDB2962F55800123972 /* testUpdateGitHubUersWithIndividualProfileData-2.json */,
+				6F02DE9C2975AEBD0099D6EF /* testDecodeHireable.json */,
 			);
 			path = TestData;
 			sourceTree = "<group>";
@@ -420,6 +423,7 @@
 				6FEB0BDD2962F55800123972 /* testUpdateGitHubUersWithIndividualProfileData-2.json in Resources */,
 				6FEEB9A6294FA2DB004E5ED4 /* testDecoderJSON.json in Resources */,
 				6F98B54829506373007DE4C5 /* testDecoder_FailCase.json in Resources */,
+				6F02DE9D2975AEBD0099D6EF /* testDecodeHireable.json in Resources */,
 				6FEB0BDE2962F55800123972 /* testUpdateGitHubUersWithIndividualProfileData-1.json in Resources */,
 				6FE1EBA729520FA100E579C6 /* testSavingRootContext.json in Resources */,
 			);
