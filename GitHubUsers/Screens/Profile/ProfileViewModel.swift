@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 struct ProfileData {
     let id: Int
@@ -40,7 +41,7 @@ struct ProfileData {
 /// View model for the profile view.
 class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
     /// State of the profile view.
-    enum State {
+    enum ProfileViewState {
         /// Initial state where no data is loaded yet.
         case idle
         /// Loading state where data is fetching from remote.
@@ -51,13 +52,15 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
         case loaded
     }
 
-    @Published private(set) var state: State = .idle
+    @Published private(set) var state: ProfileViewState = .idle
     @Published private(set) var statusMessage: String? = nil
 
     private var login: String
     private var id: Int
 
     private var dataTask: NetworkDataTask? = nil
+
+    private var cancellable: Set<AnyCancellable> = []
 
     var homeViewModel: HomeViewDelegate? = nil
     
@@ -87,15 +90,35 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
     init(id: Int64, login: String) {
         self.login = login
         self.id = Int(id)
+
+        // Setup observing network state.
+        NetworkState.shared.$networkState.sink { [weak self] networkState in
+            switch networkState {
+            case .notConnectedToInternet:
+                self?.set(message: "No Internet Connection")
+
+            case .connectedToInternetEstablished:
+                self?.set(message: nil)
+            }
+        }.store(in: &cancellable)
     }
 
     /// Set the state of the profile view.
     ///
-    /// State is always set in main thread to ensure any view update is performed in the main thread.
+    /// State is always set on main thread to ensure any view update is performed in the main thread.
     /// - Parameters:
     ///   - state: The state of the profile view of type `State`
-    private func set(state: State) {
+    private func set(state: ProfileViewState) {
         DispatchQueue.main.async { [weak self] in self?.state = state }
+    }
+
+    /// Set the status message on the profile view.
+    ///
+    /// The message is always set on the main thread to ensure any view update is performed in the main thread.
+    /// - Parameters:
+    ///   - message: The message string to be displayed on the profile view.
+    private func set(message: String?) {
+        DispatchQueue.main.async { [weak self] in self?.statusMessage = message }
     }
 
     /// Method to trigger loading profile data from remote.
@@ -156,7 +179,7 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
     private func loadGitHubUserProfile(login: String) {
         let url = GitHubEndpoints.userProfile(forLogin: login)
 
-        let dataTask = NetworkDataTask(remoteUrl: url, session: URLSession.shared) { [weak self] result in
+        let dataTask = NetworkDataTask(remoteUrl: url) { [weak self] result in
             guard let self = self else { return }
 
             NetworkQueue.shared.release()

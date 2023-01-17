@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 /// Methods for triggering UI changes and refresh from view model.
 ///
@@ -42,6 +43,21 @@ class HomeViewModel {
     var searchResult: [GitHubUser]?
 
     private var footerCellViewModel = FooterCellViewModel()
+    private var cancellable: Set<AnyCancellable> = []
+
+    /// HomeViewModel initializer.
+    init() {
+        // Setup observing network state.
+        NetworkState.shared.$networkState.sink { [weak self] networkState in
+            switch networkState {
+            case .notConnectedToInternet:
+                self?.showStatus(text: "No Internet Connection")
+
+            case .connectedToInternetEstablished:
+                self?.hideStatus()
+            }
+        }.store(in: &cancellable)
+    }
 
 }
 
@@ -221,7 +237,7 @@ extension HomeViewModel {
     func loadGitHubUsers(afterId: Int) {
         let url = GitHubEndpoints.userList(afterId: afterId)
 
-        let dataTask = NetworkDataTask(remoteUrl: url, session: URLSession.shared) { [unowned self] result in
+        let dataTask = NetworkDataTask(remoteUrl: url) { [unowned self] result in
 
             NetworkQueue.shared.release()
 

@@ -19,7 +19,9 @@ typealias NetworkQueueDownloadTaskCompletion = (NetworkVoidResult)->()
 enum NetworkError: Error {
     /// Network operation is cancelled.
     case cancelled
-    /// Network operation returns `nil` or enpty data.
+    /// Network operation timeout.
+    case timeout
+    /// Network operation returns `nil` or empty data.
     case missingData
     /// Network download file operation returns successful but file is missing.
     case missingFile
@@ -47,7 +49,23 @@ fileprivate func errorCodeMapping(code: Int) -> NetworkError {
     case NSURLErrorCancelled:
         return .cancelled
 
+    case NSURLErrorTimedOut:
+        return .timeout
+
     default:
         return .unspecifiedError
     }
+}
+
+extension URLSessionConfiguration {
+
+    /// A URLSessionConfiguration object defaults specific to this app.
+    static var appDefault: URLSessionConfiguration {
+        let config = URLSessionConfiguration.default
+        config.waitsForConnectivity = true
+        config.timeoutIntervalForResource = 60
+
+        return config
+    }
+
 }

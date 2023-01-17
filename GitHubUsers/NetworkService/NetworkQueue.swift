@@ -29,7 +29,7 @@ final public class NetworkQueue: NetworkQueueDelegate {
     private init() { }
 
     /// Queue state code
-    private enum StateCode {
+    private enum NetworkQueueStateCode {
         /// Queue is processing queued network items.
         case started
         /// Queue is not processing queued network items and/or queue is empty.
@@ -38,7 +38,7 @@ final public class NetworkQueue: NetworkQueueDelegate {
 
     // MARK: - Private Properties
 
-    private var state = StateCode.stopped
+    private var state = NetworkQueueStateCode.stopped
 
     private let dispatchQueue = DispatchQueue.global(qos: .utility)
 

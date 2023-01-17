@@ -68,6 +68,7 @@ struct ContentView: View {
         if !statusMessage.isEmpty {
             StatusView(message: statusMessage)
                 .transition(.move(edge: .top))
+                .unredacted()
         }
         NavigationView {
             ScrollViewReader { value in

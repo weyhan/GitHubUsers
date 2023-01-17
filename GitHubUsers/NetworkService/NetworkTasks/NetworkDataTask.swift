@@ -8,9 +8,9 @@
 import Foundation
 
 /// Object to call a network API with a given URL to the network endpoint and returns data from the response.
-class NetworkDataTask: NetworkQueueable {
+class NetworkDataTask: NSObject, NetworkQueueable {
 
-    let task: URLSessionDataTask
+    var task: URLSessionDataTask!
 
     var queueDelegate: NetworkQueue?
 
@@ -22,16 +22,29 @@ class NetworkDataTask: NetworkQueueable {
     ///   - remoteUrl: The endpoint for the network API to call.
     ///   - session: The URLSession instance to use for the network call.
     ///   - completion: Closure to call with Result of failure or success with data from the network call.
-    init(remoteUrl: URL, session: URLSession = URLSession.shared, completion: @escaping NetworkQueueDataTaskCompletion) {
+    init(remoteUrl: URL, completion: @escaping NetworkQueueDataTaskCompletion) {
+        super.init()
 
         let request = URLRequest(url: remoteUrl)
 
+        let config = URLSessionConfiguration.appDefault
+        let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
+
         task = session.dataTask(with: request) { data, response, error in
+            session.finishTasksAndInvalidate()
 
             if let error = error as? NSError {
-                completion(.failure(NetworkError.mapping(code: error.code)))
+                let networkError = NetworkError.mapping(code: error.code)
+
+                if networkError != .timeout {
+                    NetworkState.shared.set(networkState: .connectedToInternetEstablished)
+                }
+                completion(.failure(networkError))
+
                 return
             }
+
+            NetworkState.shared.set(networkState: .connectedToInternetEstablished)
 
             guard let data = data else {
                 completion(.failure(.missingData))
@@ -51,4 +64,12 @@ class NetworkDataTask: NetworkQueueable {
     func cancel() {
         task.cancel()
     }
+}
+
+extension NetworkDataTask: URLSessionTaskDelegate {
+
+    func urlSession(_ session: URLSession, taskIsWaitingForConnectivity task: URLSessionTask) {
+        NetworkState.shared.set(networkState: .notConnectedToInternet)
+    }
+
 }

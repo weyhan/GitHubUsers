@@ -42,6 +42,7 @@
 		6FA7E88B296488F50016B786 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA7E88A296488F50016B786 /* String.swift */; };
 		6FA7E88D29648BD30016B786 /* AvatarImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA7E88C29648BD30016B786 /* AvatarImage.swift */; };
 		6FA7E88F296736260016B786 /* SwiftUIPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA7E88E296736260016B786 /* SwiftUIPresenter.swift */; };
+		6FBE002A29769367009B71A7 /* NetworkState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBE002929769367009B71A7 /* NetworkState.swift */; };
 		6FBF304B296AAB940015D036 /* NotesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBF3049296AAB940015D036 /* NotesModel.swift */; };
 		6FD8E5012956343E00BEC5C0 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD8E5002956343E00BEC5C0 /* CoreDataStack.swift */; };
 		6FD8E5032956543C00BEC5C0 /* MockCoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD8E5022956543C00BEC5C0 /* MockCoreDataStack.swift */; };
@@ -105,6 +106,7 @@
 		6FA7E88A296488F50016B786 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		6FA7E88C29648BD30016B786 /* AvatarImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarImage.swift; sourceTree = "<group>"; };
 		6FA7E88E296736260016B786 /* SwiftUIPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIPresenter.swift; sourceTree = "<group>"; };
+		6FBE002929769367009B71A7 /* NetworkState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkState.swift; sourceTree = "<group>"; };
 		6FBF3049296AAB940015D036 /* NotesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesModel.swift; sourceTree = "<group>"; };
 		6FD8E5002956343E00BEC5C0 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		6FD8E5022956543C00BEC5C0 /* MockCoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCoreDataStack.swift; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				6F1632712950B84C00880B81 /* NetworkTasksSupport.swift */,
+				6FBE002929769367009B71A7 /* NetworkState.swift */,
 				6F16326F2950B82200880B81 /* NetworkDataTask.swift */,
 				6F2BD596295D71700053B66A /* NetworkDownloadTask.swift */,
 				6F6547D429596C720055A8F7 /* GitHubEndpoints.swift */,
@@ -436,6 +439,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6FBE002A29769367009B71A7 /* NetworkState.swift in Sources */,
 				6FA7E88B296488F50016B786 /* String.swift in Sources */,
 				6FBF304B296AAB940015D036 /* NotesModel.swift in Sources */,
 				6F741716294B5A71009B5328 /* HomeViewController.swift in Sources */,

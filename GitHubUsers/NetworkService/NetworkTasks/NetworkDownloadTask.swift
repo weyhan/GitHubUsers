@@ -8,9 +8,9 @@
 import Foundation
 
 /// Object to download remove file.
-class NetworkDownloadTask: NetworkQueueable {
+class NetworkDownloadTask: NSObject, NetworkQueueable {
 
-    let task: URLSessionDownloadTask
+    var task: URLSessionDownloadTask!
 
     var queueDelegate: NetworkQueue?
 
@@ -23,16 +23,29 @@ class NetworkDownloadTask: NetworkQueueable {
     ///   - localFileUrl: The location to save the downloaded file.
     ///   - session: The URLSession instance to use for the network call.
     ///   - completion: Closure to call with Result of failure or success with data from the network call.
-    init(remoteUrl: URL, localFileUrl: URL, session: URLSession = URLSession.shared, completion: @escaping NetworkQueueDownloadTaskCompletion) {
+    init(remoteUrl: URL, localFileUrl: URL, completion: @escaping NetworkQueueDownloadTaskCompletion) {
+        super.init()
 
         let request = URLRequest(url: remoteUrl)
 
+        let config = URLSessionConfiguration.appDefault
+        let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
+
         task = session.downloadTask(with: request) { tempFileUrl, response, error in
+            session.finishTasksAndInvalidate()
 
             if let error = error as? NSError {
-                completion(.failure(NetworkError.mapping(code: error.code)))
+                let networkError = NetworkError.mapping(code: error.code)
+
+                if networkError != .timeout {
+                    NetworkState.shared.set(networkState: .connectedToInternetEstablished)
+                }
+                completion(.failure(networkError))
+
                 return
             }
+
+            NetworkState.shared.set(networkState: .connectedToInternetEstablished)
 
             guard let tempFileUrl = tempFileUrl else {
                 completion(.failure(.missingFile))
@@ -60,4 +73,12 @@ class NetworkDownloadTask: NetworkQueueable {
     func cancel() {
         task.cancel()
     }
+}
+
+extension NetworkDownloadTask: URLSessionTaskDelegate {
+
+    func urlSession(_ session: URLSession, taskIsWaitingForConnectivity task: URLSessionTask) {
+        NetworkState.shared.set(networkState: .notConnectedToInternet)
+    }
+
 }

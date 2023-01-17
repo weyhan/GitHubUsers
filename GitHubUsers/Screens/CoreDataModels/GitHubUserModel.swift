@@ -264,7 +264,7 @@ extension GitHubUser {
     /// The save notes convenience method is non blocking. The completion closure is where any cleanups or next action trigger be placed to ensure
     /// any they executes after the save operation has completed.
     ///
-    /// - Note: If the corrosponding user is not found, the save operation will bail without triggering the completion closure.
+    /// - Note: If the corresponding user is not found, the save operation will bail without triggering the completion closure.
     /// - Parameters:
     ///   - notes: The note text to save.
     ///   - forId: Users GitHub ID.
@@ -298,7 +298,7 @@ extension GitHubUser {
     /// The remove notes convenience method is non blocking. The completion closure is where any cleanups or next action trigger be placed to ensure
     /// any they executes after the remove operation has completed.
     ///
-    /// - Note: If the corrosponding user is not found or the user have no stored notes, the remove operation will bail without triggering the completion closure.
+    /// - Note: If the corresponding user is not found or the user have no stored notes, the remove operation will bail without triggering the completion closure.
     /// - Parameters:
     ///   - notesForId: The GitHub user ID to remove notes from.
     ///   - completion: A closure that takes no parameter and returns `Void`.
