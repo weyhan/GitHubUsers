@@ -12,6 +12,7 @@ class NoteTableViewCell: HomeTableViewCell, HomeTableViewCellProtocol {
     @IBOutlet var login: UILabel!
     @IBOutlet var details: UILabel!
     @IBOutlet var avatarImageView: UIImageView!
+    @IBOutlet var noteIcon: UIImageView!
 
     @IBOutlet var outerBox: UIView!
 
@@ -37,6 +38,15 @@ class NoteTableViewCell: HomeTableViewCell, HomeTableViewCellProtocol {
         avatar.loadAvatarFile()
 
         outerBox.layer.borderColor = UIColor(named: "borderColor")?.cgColor
+
+        viewModel.additionalSetup()
     }
 
+    /// Set cell for dim apparance.
+    func dimCell() {
+        login.isEnabled = false
+        details.isEnabled = false
+        avatarImageView.alpha = 0.6
+        noteIcon.alpha = 0.8
+    }
 }

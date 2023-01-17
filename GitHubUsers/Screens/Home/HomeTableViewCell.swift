@@ -20,6 +20,7 @@ enum HomeCellType {
 /// - Setup table view cells on the Home screen table view.
 protocol HomeTableViewCellProtocol {
     func setup(withViewModel viewModel: HomeCellViewModelProtocol)
+    func dimCell()
 }
 
 /// Methods for managing and configuring the table view footer cell on the Home screen.

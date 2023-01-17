@@ -22,6 +22,7 @@ protocol HomeCellViewModelProtocol {
     var isAvatarColorInverted: Bool { get }
 
     func prepareForReuse()
+    func additionalSetup()
 }
 
 /// Properties and methods for managing and configuring the footer cell.
@@ -36,13 +37,14 @@ class HomeCellViewModel {
     let details: String
     let avatarUrl: String
     let row: Int
+    let lastViewed: Date?
 
     var avatar: AvatarImage?
 
     var delegate: HomeTableViewCellProtocol!
 
     /// Initializes view model.
-    init(id: Int64, login: String, details: String, avatarUrl: String, row: Int64) {
+    init(id: Int64, login: String, details: String, avatarUrl: String, row: Int64, lastViewed: Date?) {
         let id = Int(id)
         let row = Int(row)
 
@@ -51,6 +53,7 @@ class HomeCellViewModel {
         self.details = details
         self.avatarUrl = avatarUrl
         self.row = row
+        self.lastViewed = lastViewed
 
         self.avatar = AvatarImage(id: id, remoteUrlString: avatarUrl, invertColor: isAvatarColorInverted)
     }
@@ -68,5 +71,16 @@ class HomeCellViewModel {
         avatar?.cancel()
         avatar = nil
         delegate = nil
+    }
+
+    /// Perform setup for additional business logic.
+    func additionalSetup() {
+
+        // If profile is viewed within the last one year, dim the cell.
+        if let lastViewed = lastViewed,
+           let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date()),
+           lastViewed > oneYearAgo {
+            delegate.dimCell()
+        }
     }
 }

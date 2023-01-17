@@ -116,7 +116,7 @@ extension HomeViewModel {
             fatalError("Search result don't match count!")
         }
 
-        return NormalCellViewModel(id: user.id, login: user.login, details: user.type, avatarUrl: user.avatarUrl, row: user.row)
+        return NormalCellViewModel(id: user.id, login: user.login, details: user.type, avatarUrl: user.avatarUrl, row: user.row, lastViewed: user.lastViewed)
     }
 
     /// Get cell view model for normal mode.
@@ -124,7 +124,7 @@ extension HomeViewModel {
         guard let user = GitHubUser.fetchUser(atRow: row),
               let homeCellViewModel = makeCellViewModel(row, user: user) else {
 
-            return NormalCellViewModel(id: -1, login: "-", details: "-", avatarUrl: "", row: -1)
+            fatalError("Cached profiles don't match count!")
         }
 
         return homeCellViewModel
@@ -134,10 +134,10 @@ extension HomeViewModel {
     private func makeCellViewModel(_ row: Int, user: GitHubUser) -> HomeCellViewModelProtocol? {
         switch viewModelType(forUser: user) {
         case .normal:
-            return NormalCellViewModel(id: user.id, login: user.login, details: user.type, avatarUrl: user.avatarUrl, row: user.row)
+            return NormalCellViewModel(id: user.id, login: user.login, details: user.type, avatarUrl: user.avatarUrl, row: user.row, lastViewed: user.lastViewed)
 
         case .note:
-            return NoteCellViewModel(id: user.id, login: user.login, details: user.type, avatarUrl: user.avatarUrl, row: user.row)
+            return NoteCellViewModel(id: user.id, login: user.login, details: user.type, avatarUrl: user.avatarUrl, row: user.row, lastViewed: user.lastViewed)
 
         default:
             return nil

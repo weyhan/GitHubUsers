@@ -37,6 +37,14 @@ class NormalTableViewCell: HomeTableViewCell, HomeTableViewCellProtocol {
         avatar.loadAvatarFile()
 
         outerBox.layer.borderColor = UIColor(named: "borderColor")?.cgColor
+
+        viewModel.additionalSetup()
     }
 
+    /// Set cell for dim apparance.
+    func dimCell() {
+        login.isEnabled = false
+        details.isEnabled = false
+        avatarImageView.alpha = 0.5
+    }
 }

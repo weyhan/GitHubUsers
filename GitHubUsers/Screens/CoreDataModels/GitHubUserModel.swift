@@ -56,6 +56,9 @@ class GitHubUser: NSManagedObject, Decodable {
     // Keep index of UITableView row position.
     @NSManaged var row: Int64
 
+    // Keep the date of the last time the user profile is viewed.
+    @NSManaged var lastViewed: Date?
+
     enum CodingKeys: CodingKey {
         case login
         case id
@@ -142,6 +145,9 @@ class GitHubUser: NSManagedObject, Decodable {
 
         // Set to defaults value. Actual row value will be assigned after decoding.
         self.row = -1
+
+        // Defaults to never viewed before.
+        self.lastViewed = nil
     }
 }
 

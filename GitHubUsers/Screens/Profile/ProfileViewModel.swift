@@ -157,11 +157,17 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
         dataTask?.cancel()
         dataTask = nil
 
+        // refresh row after save operation if notesText changed.
         if notesTextChanged {
             save(notes: newNotesText ?? "") {
                 DispatchQueue.main.async {
                     self.homeViewModel?.refresh(rowAt: self.profile.row)
                 }
+            }
+
+        } else {  // Otherwise, refresh row immediately.
+            DispatchQueue.main.async {
+                self.homeViewModel?.refresh(rowAt: self.profile.row)
             }
         }
     }
@@ -268,6 +274,9 @@ extension ProfileViewModel {
                 notes.text = text
                 newUser.notes = notes
             }
+
+            // Set last viewed timestamp to now.
+            newUser.lastViewed = Date()
 
             coreDataStack.saveContextAndWait(context)
 
