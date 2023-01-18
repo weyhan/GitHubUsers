@@ -223,7 +223,7 @@ final class GitHubUserTests: XCTestCase {
         var row = -1
         decoded.forEach {
             row += 1
-            $0.row = Int64(row)
+            $0.intRow = row
         }
 
         coreDataStack.saveContextAndWait(context)
@@ -260,7 +260,7 @@ final class GitHubUserTests: XCTestCase {
         var row = -1
         decoded.forEach {
             row += 1
-            $0.row = Int64(row)
+            $0.intRow = row
         }
 
         coreDataStack.saveContextAndWait(context)

@@ -44,9 +44,9 @@ class HomeCellViewModel {
     var delegate: HomeTableViewCellProtocol!
 
     /// Initializes view model.
-    init(id: Int64, login: String, details: String, avatarUrl: String, row: Int64, lastViewed: Date?) {
-        let id = Int(id)
-        let row = Int(row)
+    init(id: Int, login: String, details: String, avatarUrl: String, row: Int, lastViewed: Date?) {
+        let id = id
+        let row = row
 
         self.id = id
         self.login = login
@@ -75,7 +75,6 @@ class HomeCellViewModel {
 
     /// Perform setup for additional business logic.
     func additionalSetup() {
-
         // If profile is viewed within the last one year, dim the cell.
         if let lastViewed = lastViewed,
            let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date()),

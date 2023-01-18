@@ -155,6 +155,19 @@ extension GitHubUser: Identifiable { }
 
 extension GitHubUser {
 
+    var intId: Int {
+        get { Int(self.id) }
+        set { self.id = Int64(newValue) }
+    }
+
+    var intRow: Int {
+        get { Int(self.row) }
+        set { self.row = Int64(newValue) }
+    }
+}
+
+extension GitHubUser {
+
     /// Retrieve the total number of cached GitHub users records.
     static func count() -> Int {
         let context = CoreDataStack.shared.mainContext
@@ -176,11 +189,11 @@ extension GitHubUser {
         request.predicate = NSPredicate(format: "id == max(id)")
         let result = try? context.fetch(request)
 
-        guard let lastId = result?.first?.id else {
+        guard let lastId = result?.first?.intId else {
             return -1
         }
 
-        return Int(lastId)
+        return lastId
     }
 
     /// Retrieve user profile from cache at certain row.

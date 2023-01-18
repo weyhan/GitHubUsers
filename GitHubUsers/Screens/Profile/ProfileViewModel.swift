@@ -23,7 +23,7 @@ struct ProfileData {
     let row: Int
 
     init(user: GitHubUser) {
-        id = Int(user.id)
+        id = user.intId
         login = user.login
         name = user.name
         avatarUrlString = user.avatarUrl
@@ -34,7 +34,7 @@ struct ProfileData {
         bio = user.blog
         notesText = user.notes?.text
 
-        row = Int(user.row)
+        row = user.intRow
     }
 }
 
@@ -87,9 +87,9 @@ class ProfileViewModel: ObservableObject, ProfileViewModelProtocol {
     /// - Parameters:
     ///   - id: The GitHub user ID.
     ///   - login: The GitHub user login.
-    init(id: Int64, login: String) {
+    init(id: Int, login: String) {
         self.login = login
-        self.id = Int(id)
+        self.id = id
 
         // Setup observing network state.
         NetworkState.shared.$networkState.sink { [weak self] networkState in
@@ -268,7 +268,7 @@ extension ProfileViewModel {
             }
 
             // Resave the row data and the profile notes.
-            newUser.row = Int64(oldUser.row)
+            newUser.row = oldUser.row
             if let text = oldUser.notes?.text {
                 let notes = Notes(context: context)
                 notes.text = text

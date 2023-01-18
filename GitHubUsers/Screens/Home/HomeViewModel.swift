@@ -116,7 +116,7 @@ extension HomeViewModel {
             fatalError("Search result don't match count!")
         }
 
-        return NormalCellViewModel(id: user.id, login: user.login, details: user.type, avatarUrl: user.avatarUrl, row: user.row, lastViewed: user.lastViewed)
+        return NormalCellViewModel(id: user.intId, login: user.login, details: user.type, avatarUrl: user.avatarUrl, row: user.intRow, lastViewed: user.lastViewed)
     }
 
     /// Get cell view model for normal mode.
@@ -134,10 +134,10 @@ extension HomeViewModel {
     private func makeCellViewModel(_ row: Int, user: GitHubUser) -> HomeCellViewModelProtocol? {
         switch viewModelType(forUser: user) {
         case .normal:
-            return NormalCellViewModel(id: user.id, login: user.login, details: user.type, avatarUrl: user.avatarUrl, row: user.row, lastViewed: user.lastViewed)
+            return NormalCellViewModel(id: user.intId, login: user.login, details: user.type, avatarUrl: user.avatarUrl, row: user.intRow, lastViewed: user.lastViewed)
 
         case .note:
-            return NoteCellViewModel(id: user.id, login: user.login, details: user.type, avatarUrl: user.avatarUrl, row: user.row, lastViewed: user.lastViewed)
+            return NoteCellViewModel(id: user.intId, login: user.login, details: user.type, avatarUrl: user.avatarUrl, row: user.intRow, lastViewed: user.lastViewed)
 
         default:
             return nil
@@ -177,7 +177,7 @@ extension HomeViewModel {
             fatalError("Home UITableView is misconfigured.")
         }
         
-        let profileViewModel = ProfileViewModel(id: user.id, login: user.login)
+        let profileViewModel = ProfileViewModel(id: user.intId, login: user.login)
         profileViewModel.homeViewModel = delegate
         let profileView = ProfileView(viewModel: profileViewModel)
 
@@ -207,7 +207,7 @@ extension HomeViewModel {
                 return
             }
 
-            users.forEach { row += 1; $0.row = Int64(row) }
+            users.forEach { row += 1; $0.intRow = row }
             coreDataStack.saveContextAndWait(context)
 
             completion(.success(users))
