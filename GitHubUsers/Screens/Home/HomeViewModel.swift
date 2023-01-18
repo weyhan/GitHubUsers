@@ -57,6 +57,12 @@ class HomeViewModel {
                 self?.hideStatus()
             }
         }.store(in: &cancellable)
+
+        PagingControl.shared.$loadingPage.sink { [weak self] row in
+            if PagingControl.shared.isReady {
+                self?.loadPage(atRow: row)
+            }
+        }.store(in: &cancellable)
     }
 
 }
@@ -189,8 +195,15 @@ extension HomeViewModel {
 // MARK: - JSON Decoding Methods Extension
 extension HomeViewModel {
 
-    /// Decodes results from GitHub user list API.
-    private func decodeGitHubUsersList(data: Data, lastIndex: Int, coreDataStack: CoreDataStack, completion: @escaping (Result<[GitHubUser], DecodingError>)->()) {
+    /// Decodes new JSON data from GitHub user list API.
+    ///
+    /// Decoded JSON is cached in persistent store as new entries.
+    /// - Parameters:
+    ///   - data: Data object containing JSON structured data.
+    ///   - lastIndex: Index of the last cached profile.
+    ///   - coreDataStack: The CoreDataStack for storing decoded JSON.
+    ///   - completion: Completion handling closure
+    private func decodeInsertGitHubUsersList(data: Data, lastIndex: Int, coreDataStack: CoreDataStack, completion: @escaping (Result<[GitHubUser], DecodingError>)->()) {
 
         var row = lastIndex
         let context = coreDataStack.backgroundContext()
@@ -214,6 +227,65 @@ extension HomeViewModel {
         }
     }
 
+    /// Decodes new JSON data from GitHub user list API.
+    ///
+    /// Decoded JSON is cached in persistent store updating existing entries.
+    /// - Parameters:
+    ///   - data: Data object containing JSON structured data.
+    ///   - coreDataStack: The CoreDataStack for storing decoded JSON.
+    ///   - completion: Completion handling closure
+    private func decodeUpdateGitHubUsersList(data: Data, row: Int, coreDataStack: CoreDataStack, completion: @escaping (Result<[GitHubUser], DecodingError>)->()) {
+
+        let context = coreDataStack.backgroundContext()
+
+        let length = PagingControl.shared.length
+        // If PagingControl is not ready, bail.
+        guard length > -1 else { return }
+
+        // load cache record to migrate over metadata not from GitHub API.
+        let predicate = NSPredicate(format: "row >= %d AND row < %d", row, row + length)
+        guard let usersOfPage = GitHubUser.fetchUsers(predicates: predicate, context: context) else {
+            return
+        }
+
+        var oldUsers = [Int64 : GitHubUser]()
+        usersOfPage.forEach {
+            oldUsers[$0.id] = $0
+        }
+
+        context.perform {
+            let decoder = JSONDecoderService<[GitHubUser]>(context: context, coreDataStack: coreDataStack)
+
+            let users: [GitHubUser]
+            do {
+                users = try decoder.decode(data: data)
+
+            } catch {
+                completion(.failure(error as! DecodingError))
+                return
+            }
+
+            // Migrate metadata.
+            users.forEach { newUser in
+                guard let user = oldUsers[newUser.id] else {
+                    fatalError("Cached data mismatched")
+                }
+                newUser.row = user.row
+                newUser.lastViewed = user.lastViewed
+
+                if let text = user.notes?.text {
+                    let notes = Notes(context: context)
+                    notes.text = text
+                    newUser.notes = notes
+                }
+            }
+
+            coreDataStack.saveContextAndWait(context)
+
+            completion(.success(users))
+        }
+    }
+
 }
 
 // MARK: - Network Tasks Extension
@@ -229,24 +301,52 @@ extension HomeViewModel {
         loadGitHubUsers(afterId: lastId)
     }
 
-    /// Load data from GitHub user list API.
+    /// Method to reload previously loaded GitHubUser list.
     ///
-    /// Request for the list of users starting from the next ID after the given `afterId`.
     /// - Parameters:
-    ///   - afterId: Request for the list of users starting from the next ID following `afterId`.
-    func loadGitHubUsers(afterId: Int) {
-        let url = GitHubEndpoints.userList(afterId: afterId)
+    ///   - atRow: The first row of the page to load.
+    func loadPage(atRow row: Int) {
+        let lastId = GitHubUser.fetchId(ofPreviousRow: row)
+        let url = GitHubEndpoints.userList(afterId: lastId)
 
         let dataTask = NetworkDataTask(remoteUrl: url) { [unowned self] result in
 
             NetworkQueue.shared.release()
 
             if case .success(let data) = result {
-                decodeGitHubUsersList(data: data,
+                decodeUpdateGitHubUsersList(data: data, row: row, coreDataStack: CoreDataStack.shared) { decodeResult in
+                    if case .success(_) = decodeResult {
+                        self.refreshUI()
+                    }
+                }
+            }
+
+        }
+
+        let queue = NetworkQueue.shared
+        queue.enqueue(networkJob: dataTask)
+        queue.resume()
+    }
+
+    /// Load data from GitHub user list API.
+    ///
+    /// Request for the list of users starting from the next ID after the given `afterId`.
+    /// - Parameters:
+    ///   - afterId: Request for the list of users starting from the next ID following `afterId`.
+    func loadGitHubUsers(afterId lastId: Int) {
+        let url = GitHubEndpoints.userList(afterId: lastId)
+
+        let dataTask = NetworkDataTask(remoteUrl: url) { [unowned self] result in
+
+            NetworkQueue.shared.release()
+
+            if case .success(let data) = result {
+                decodeInsertGitHubUsersList(data: data,
                                       lastIndex: GitHubUser.count() - 1,
                                       coreDataStack: CoreDataStack.shared) { decodeResult in
 
-                    if case .success(_) = decodeResult {
+                    if case .success(let user) = decodeResult {
+                        PagingControl.shared.set(pageLength: user.count)
                         self.refreshUI()
                     }
                 }

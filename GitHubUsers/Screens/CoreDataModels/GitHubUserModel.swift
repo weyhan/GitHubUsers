@@ -242,6 +242,23 @@ extension GitHubUser {
 
     }
 
+    /// Retrieve ID of the previous row of a certain row.
+    /// - Parameters:
+    ///   - row: The row after the desired row.
+    /// - Returns: Returns the ID of the `row` - 1
+    static func fetchId(ofPreviousRow row: Int) -> Int {
+        if row == 0 {
+            return 0
+
+        } else {
+            guard let user = GitHubUser.fetchUser(atRow: row - 1) else {
+                fatalError("GitHubUser does not contain row \(row - 1).")
+            }
+
+            return user.intId
+        }
+    }
+
     /// Retrieve profile notes from cache by ID.
     ///
     /// If the profile notes is available in cached the `Notes` object is returned. Otherwise nil is returned.

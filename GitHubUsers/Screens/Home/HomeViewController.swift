@@ -174,6 +174,8 @@ extension HomeViewController: UITableViewDataSource {
 
         homeTableViewCell.setup(withViewModel: cellViewModel)
 
+        PagingControl.shared.requestLoading(atRow: indexPath.row)
+
         return cell
     }
 

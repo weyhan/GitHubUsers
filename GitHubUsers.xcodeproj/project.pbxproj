@@ -42,6 +42,8 @@
 		6FA7E88B296488F50016B786 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA7E88A296488F50016B786 /* String.swift */; };
 		6FA7E88D29648BD30016B786 /* AvatarImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA7E88C29648BD30016B786 /* AvatarImage.swift */; };
 		6FA7E88F296736260016B786 /* SwiftUIPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA7E88E296736260016B786 /* SwiftUIPresenter.swift */; };
+		6FA91B2F29787132004AC1CF /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA91B2E29787132004AC1CF /* UserDefaults.swift */; };
+		6FA91B3129787539004AC1CF /* PagingControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA91B3029787539004AC1CF /* PagingControl.swift */; };
 		6FBE002A29769367009B71A7 /* NetworkState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBE002929769367009B71A7 /* NetworkState.swift */; };
 		6FBE002C2977AF88009B71A7 /* testLastId.json in Resources */ = {isa = PBXBuildFile; fileRef = 6FBE002B2977A1E5009B71A7 /* testLastId.json */; };
 		6FBE13FB297809CA001AEB30 /* GitHubUserNotesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBE13FA297809CA001AEB30 /* GitHubUserNotesTests.swift */; };
@@ -109,6 +111,8 @@
 		6FA7E88A296488F50016B786 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		6FA7E88C29648BD30016B786 /* AvatarImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarImage.swift; sourceTree = "<group>"; };
 		6FA7E88E296736260016B786 /* SwiftUIPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIPresenter.swift; sourceTree = "<group>"; };
+		6FA91B2E29787132004AC1CF /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
+		6FA91B3029787539004AC1CF /* PagingControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagingControl.swift; sourceTree = "<group>"; };
 		6FBE002929769367009B71A7 /* NetworkState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkState.swift; sourceTree = "<group>"; };
 		6FBE002B2977A1E5009B71A7 /* testLastId.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = testLastId.json; sourceTree = "<group>"; };
 		6FBE13FA297809CA001AEB30 /* GitHubUserNotesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubUserNotesTests.swift; sourceTree = "<group>"; };
@@ -263,6 +267,8 @@
 				6F2BD594295C73CA0053B66A /* FileManager.swift */,
 				6FA7E88A296488F50016B786 /* String.swift */,
 				6F1E5A19296D3B2100462F85 /* View.swift */,
+				6FA91B2E29787132004AC1CF /* UserDefaults.swift */,
+				6FA91B3029787539004AC1CF /* PagingControl.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -474,6 +480,7 @@
 				6FA7E8892964111D0016B786 /* Cache.swift in Sources */,
 				6F908766294CBB48006E0B75 /* ProfileView.swift in Sources */,
 				6F1E5A1A296D3B2100462F85 /* View.swift in Sources */,
+				6FA91B3129787539004AC1CF /* PagingControl.swift in Sources */,
 				6FEEB99C294F6F9F004E5ED4 /* KodecoCoreDataStack.swift in Sources */,
 				6F908773294F114F006E0B75 /* GitHubUserModel.swift in Sources */,
 				6F7416E9294B51C0009B5328 /* GitHubUsers.xcdatamodeld in Sources */,
@@ -491,6 +498,7 @@
 				6F1632722950B84C00880B81 /* NetworkTasksSupport.swift in Sources */,
 				6F6547D529596C720055A8F7 /* GitHubEndpoints.swift in Sources */,
 				6F7416DF294B51C0009B5328 /* AppDelegate.swift in Sources */,
+				6FA91B2F29787132004AC1CF /* UserDefaults.swift in Sources */,
 				6F6547C929585E8B0055A8F7 /* NoteCellViewModel.swift in Sources */,
 				6F2BD597295D71700053B66A /* NetworkDownloadTask.swift in Sources */,
 				6F7416E1294B51C0009B5328 /* SceneDelegate.swift in Sources */,
