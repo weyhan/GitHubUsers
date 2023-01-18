@@ -49,4 +49,13 @@ class NoteTableViewCell: HomeTableViewCell, HomeTableViewCellProtocol {
         avatarImageView.alpha = 0.6
         noteIcon.alpha = 0.8
     }
+
+    /// Prepares a reusable cell for reuse by the table view’s delegate.
+    override func prepareForReuse() {
+        super.prepareForReuse()
+
+        login.isEnabled = true
+        details.isEnabled = true
+        avatarImageView.alpha = 1.0
+    }
 }

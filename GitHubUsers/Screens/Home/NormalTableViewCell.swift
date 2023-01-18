@@ -47,4 +47,13 @@ class NormalTableViewCell: HomeTableViewCell, HomeTableViewCellProtocol {
         details.isEnabled = false
         avatarImageView.alpha = 0.5
     }
+
+    /// Prepares a reusable cell for reuse by the table view’s delegate.
+    override func prepareForReuse() {
+        super.prepareForReuse()
+
+        login.isEnabled = true
+        details.isEnabled = true
+        avatarImageView.alpha = 1.0
+    }
 }
