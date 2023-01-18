@@ -49,6 +49,7 @@
 		6FD8E5012956343E00BEC5C0 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD8E5002956343E00BEC5C0 /* CoreDataStack.swift */; };
 		6FD8E5032956543C00BEC5C0 /* MockCoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD8E5022956543C00BEC5C0 /* MockCoreDataStack.swift */; };
 		6FE1EBA729520FA100E579C6 /* first30Users.json in Resources */ = {isa = PBXBuildFile; fileRef = 6FE1EBA629520FA100E579C6 /* first30Users.json */; };
+		6FE80C0B29784D84005B412E /* StringUtilitiesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE80C0A29784D84005B412E /* StringUtilitiesTests.swift */; };
 		6FEB0BDA296295E300123972 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEB0BD9296295E300123972 /* ProfileViewModel.swift */; };
 		6FEB0BDD2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-2.json in Resources */ = {isa = PBXBuildFile; fileRef = 6FEB0BDB2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-2.json */; };
 		6FEB0BDE2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-1.json in Resources */ = {isa = PBXBuildFile; fileRef = 6FEB0BDC2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-1.json */; };
@@ -115,6 +116,7 @@
 		6FD8E5002956343E00BEC5C0 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		6FD8E5022956543C00BEC5C0 /* MockCoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCoreDataStack.swift; sourceTree = "<group>"; };
 		6FE1EBA629520FA100E579C6 /* first30Users.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = first30Users.json; sourceTree = "<group>"; };
+		6FE80C0A29784D84005B412E /* StringUtilitiesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringUtilitiesTests.swift; sourceTree = "<group>"; };
 		6FEB0BD9296295E300123972 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		6FEB0BDB2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "testUpdateGitHubUsersWithIndividualProfileData-2.json"; sourceTree = "<group>"; };
 		6FEB0BDC2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "testUpdateGitHubUsersWithIndividualProfileData-1.json"; sourceTree = "<group>"; };
@@ -209,10 +211,8 @@
 			isa = PBXGroup;
 			children = (
 				6F90876D294ED6FF006E0B75 /* NetworkQueueTests.swift */,
-				6FEEB9A1294F96BA004E5ED4 /* GitHubUserTests.swift */,
-				6FBE13FA297809CA001AEB30 /* GitHubUserNotesTests.swift */,
-				6FD8E5022956543C00BEC5C0 /* MockCoreDataStack.swift */,
-				6FEEB9A8294FA2F7004E5ED4 /* TestData */,
+				6FE80C0C29784DBE005B412E /* GitHubUsers */,
+				6FE80C0D29784DCF005B412E /* Utilities */,
 			);
 			path = GitHubUsersTests;
 			sourceTree = "<group>";
@@ -299,6 +299,25 @@
 				6FD8E5002956343E00BEC5C0 /* CoreDataStack.swift */,
 			);
 			path = CoreDataService;
+			sourceTree = "<group>";
+		};
+		6FE80C0C29784DBE005B412E /* GitHubUsers */ = {
+			isa = PBXGroup;
+			children = (
+				6FEEB9A8294FA2F7004E5ED4 /* TestData */,
+				6FEEB9A1294F96BA004E5ED4 /* GitHubUserTests.swift */,
+				6FBE13FA297809CA001AEB30 /* GitHubUserNotesTests.swift */,
+				6FD8E5022956543C00BEC5C0 /* MockCoreDataStack.swift */,
+			);
+			path = GitHubUsers;
+			sourceTree = "<group>";
+		};
+		6FE80C0D29784DCF005B412E /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				6FE80C0A29784D84005B412E /* StringUtilitiesTests.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 		6FEEB99A294F6F72004E5ED4 /* 3rdParty */ = {
@@ -488,6 +507,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6F90876E294ED6FF006E0B75 /* NetworkQueueTests.swift in Sources */,
+				6FE80C0B29784D84005B412E /* StringUtilitiesTests.swift in Sources */,
 				6FEEB9A2294F96BA004E5ED4 /* GitHubUserTests.swift in Sources */,
 				6FD8E5032956543C00BEC5C0 /* MockCoreDataStack.swift in Sources */,
 				6FBE13FB297809CA001AEB30 /* GitHubUserNotesTests.swift in Sources */,

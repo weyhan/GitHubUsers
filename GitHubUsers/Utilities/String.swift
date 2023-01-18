@@ -14,7 +14,7 @@ import Foundation
 /// - Parameters:
 ///   - string: An optional string that will be displayed.
 /// - Returns: String ready for display on UI.
-func displayText(_ string: String?) -> String {
+public func displayText(_ string: String?) -> String {
     string == nil || string?.isEmpty == true ? "-" : string!
 }
 
@@ -23,7 +23,15 @@ func displayText(_ string: String?) -> String {
 /// Optional `Int` is unwrapped and converted to either the string content or to "-" if optional `Int` is nil.
 /// - Parameters:
 ///   - string: An optional string that will be displayed.
+///   - withGroupingSeparator: Boolean to flag if output number should have group-seperators.
 /// - Returns: String ready for display on UI.
-func displayText(_ integer: Int?) -> String {
-    integer != nil ? "\(integer!)" : "-"
+public func displayText(_ integer: Int?, withGroupingSeparator: Bool = true) -> String {
+    guard let integer = integer else {
+        return "-"
+    }
+
+    let formatter = NumberFormatter()
+    formatter.numberStyle = .decimal
+    let number = NSNumber(value: integer)
+    return formatter.string(from: NSNumber(value: integer)) ?? "-"
 }
