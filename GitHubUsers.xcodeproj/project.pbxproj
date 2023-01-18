@@ -43,13 +43,15 @@
 		6FA7E88D29648BD30016B786 /* AvatarImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA7E88C29648BD30016B786 /* AvatarImage.swift */; };
 		6FA7E88F296736260016B786 /* SwiftUIPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA7E88E296736260016B786 /* SwiftUIPresenter.swift */; };
 		6FBE002A29769367009B71A7 /* NetworkState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBE002929769367009B71A7 /* NetworkState.swift */; };
+		6FBE002C2977AF88009B71A7 /* testLastId.json in Resources */ = {isa = PBXBuildFile; fileRef = 6FBE002B2977A1E5009B71A7 /* testLastId.json */; };
+		6FBE13FB297809CA001AEB30 /* GitHubUserNotesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBE13FA297809CA001AEB30 /* GitHubUserNotesTests.swift */; };
 		6FBF304B296AAB940015D036 /* NotesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBF3049296AAB940015D036 /* NotesModel.swift */; };
 		6FD8E5012956343E00BEC5C0 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD8E5002956343E00BEC5C0 /* CoreDataStack.swift */; };
 		6FD8E5032956543C00BEC5C0 /* MockCoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD8E5022956543C00BEC5C0 /* MockCoreDataStack.swift */; };
-		6FE1EBA729520FA100E579C6 /* testSavingRootContext.json in Resources */ = {isa = PBXBuildFile; fileRef = 6FE1EBA629520FA100E579C6 /* testSavingRootContext.json */; };
+		6FE1EBA729520FA100E579C6 /* first30Users.json in Resources */ = {isa = PBXBuildFile; fileRef = 6FE1EBA629520FA100E579C6 /* first30Users.json */; };
 		6FEB0BDA296295E300123972 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEB0BD9296295E300123972 /* ProfileViewModel.swift */; };
-		6FEB0BDD2962F55800123972 /* testUpdateGitHubUersWithIndividualProfileData-2.json in Resources */ = {isa = PBXBuildFile; fileRef = 6FEB0BDB2962F55800123972 /* testUpdateGitHubUersWithIndividualProfileData-2.json */; };
-		6FEB0BDE2962F55800123972 /* testUpdateGitHubUersWithIndividualProfileData-1.json in Resources */ = {isa = PBXBuildFile; fileRef = 6FEB0BDC2962F55800123972 /* testUpdateGitHubUersWithIndividualProfileData-1.json */; };
+		6FEB0BDD2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-2.json in Resources */ = {isa = PBXBuildFile; fileRef = 6FEB0BDB2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-2.json */; };
+		6FEB0BDE2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-1.json in Resources */ = {isa = PBXBuildFile; fileRef = 6FEB0BDC2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-1.json */; };
 		6FEEB99C294F6F9F004E5ED4 /* KodecoCoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEEB99B294F6F9F004E5ED4 /* KodecoCoreDataStack.swift */; };
 		6FEEB99E294F7755004E5ED4 /* JSONDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEEB99D294F7755004E5ED4 /* JSONDecoder.swift */; };
 		6FEEB9A0294F8FF7004E5ED4 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEEB99F294F8FF7004E5ED4 /* AppConfig.swift */; };
@@ -107,13 +109,15 @@
 		6FA7E88C29648BD30016B786 /* AvatarImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarImage.swift; sourceTree = "<group>"; };
 		6FA7E88E296736260016B786 /* SwiftUIPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIPresenter.swift; sourceTree = "<group>"; };
 		6FBE002929769367009B71A7 /* NetworkState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkState.swift; sourceTree = "<group>"; };
+		6FBE002B2977A1E5009B71A7 /* testLastId.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = testLastId.json; sourceTree = "<group>"; };
+		6FBE13FA297809CA001AEB30 /* GitHubUserNotesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubUserNotesTests.swift; sourceTree = "<group>"; };
 		6FBF3049296AAB940015D036 /* NotesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesModel.swift; sourceTree = "<group>"; };
 		6FD8E5002956343E00BEC5C0 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		6FD8E5022956543C00BEC5C0 /* MockCoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCoreDataStack.swift; sourceTree = "<group>"; };
-		6FE1EBA629520FA100E579C6 /* testSavingRootContext.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = testSavingRootContext.json; sourceTree = "<group>"; };
+		6FE1EBA629520FA100E579C6 /* first30Users.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = first30Users.json; sourceTree = "<group>"; };
 		6FEB0BD9296295E300123972 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
-		6FEB0BDB2962F55800123972 /* testUpdateGitHubUersWithIndividualProfileData-2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "testUpdateGitHubUersWithIndividualProfileData-2.json"; sourceTree = "<group>"; };
-		6FEB0BDC2962F55800123972 /* testUpdateGitHubUersWithIndividualProfileData-1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "testUpdateGitHubUersWithIndividualProfileData-1.json"; sourceTree = "<group>"; };
+		6FEB0BDB2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "testUpdateGitHubUsersWithIndividualProfileData-2.json"; sourceTree = "<group>"; };
+		6FEB0BDC2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "testUpdateGitHubUsersWithIndividualProfileData-1.json"; sourceTree = "<group>"; };
 		6FEEB99B294F6F9F004E5ED4 /* KodecoCoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KodecoCoreDataStack.swift; sourceTree = "<group>"; };
 		6FEEB99D294F7755004E5ED4 /* JSONDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONDecoder.swift; sourceTree = "<group>"; };
 		6FEEB99F294F8FF7004E5ED4 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
@@ -206,6 +210,7 @@
 			children = (
 				6F90876D294ED6FF006E0B75 /* NetworkQueueTests.swift */,
 				6FEEB9A1294F96BA004E5ED4 /* GitHubUserTests.swift */,
+				6FBE13FA297809CA001AEB30 /* GitHubUserNotesTests.swift */,
 				6FD8E5022956543C00BEC5C0 /* MockCoreDataStack.swift */,
 				6FEEB9A8294FA2F7004E5ED4 /* TestData */,
 			);
@@ -308,12 +313,13 @@
 		6FEEB9A8294FA2F7004E5ED4 /* TestData */ = {
 			isa = PBXGroup;
 			children = (
-				6FE1EBA629520FA100E579C6 /* testSavingRootContext.json */,
+				6FE1EBA629520FA100E579C6 /* first30Users.json */,
 				6FEEB9A5294FA2DB004E5ED4 /* testDecoderJSON.json */,
 				6F98B54729506373007DE4C5 /* testDecoder_FailCase.json */,
-				6FEB0BDC2962F55800123972 /* testUpdateGitHubUersWithIndividualProfileData-1.json */,
-				6FEB0BDB2962F55800123972 /* testUpdateGitHubUersWithIndividualProfileData-2.json */,
+				6FEB0BDC2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-1.json */,
+				6FEB0BDB2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-2.json */,
 				6F02DE9C2975AEBD0099D6EF /* testDecodeHireable.json */,
+				6FBE002B2977A1E5009B71A7 /* testLastId.json */,
 			);
 			path = TestData;
 			sourceTree = "<group>";
@@ -423,12 +429,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6FEB0BDD2962F55800123972 /* testUpdateGitHubUersWithIndividualProfileData-2.json in Resources */,
+				6FEB0BDD2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-2.json in Resources */,
 				6FEEB9A6294FA2DB004E5ED4 /* testDecoderJSON.json in Resources */,
 				6F98B54829506373007DE4C5 /* testDecoder_FailCase.json in Resources */,
 				6F02DE9D2975AEBD0099D6EF /* testDecodeHireable.json in Resources */,
-				6FEB0BDE2962F55800123972 /* testUpdateGitHubUersWithIndividualProfileData-1.json in Resources */,
-				6FE1EBA729520FA100E579C6 /* testSavingRootContext.json in Resources */,
+				6FEB0BDE2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-1.json in Resources */,
+				6FE1EBA729520FA100E579C6 /* first30Users.json in Resources */,
+				6FBE002C2977AF88009B71A7 /* testLastId.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -483,6 +490,7 @@
 				6F90876E294ED6FF006E0B75 /* NetworkQueueTests.swift in Sources */,
 				6FEEB9A2294F96BA004E5ED4 /* GitHubUserTests.swift in Sources */,
 				6FD8E5032956543C00BEC5C0 /* MockCoreDataStack.swift in Sources */,
+				6FBE13FB297809CA001AEB30 /* GitHubUserNotesTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

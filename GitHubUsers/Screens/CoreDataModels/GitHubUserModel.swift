@@ -168,11 +168,13 @@ extension GitHubUser {
     }
 
     /// Retrieve the ID of the last GitHub user cached.
-    static func lastId() -> Int {
+    ///
+    /// - Parameters:
+    ///   - context: Managed object context. Defaults to main context.
+    static func lastId(context: NSManagedObjectContext = CoreDataStack.shared.mainContext) -> Int {
         let request = GitHubUser.fetchRequest()
         request.predicate = NSPredicate(format: "id == max(id)")
-
-        let result = try? CoreDataStack.shared.mainContext.fetch(request)
+        let result = try? context.fetch(request)
 
         guard let lastId = result?.first?.id else {
             return -1
@@ -242,7 +244,8 @@ extension GitHubUser {
         fetchRequest.predicate = predicate
         fetchRequest.fetchLimit = 1
 
-        guard let notes = try? context.fetch(fetchRequest).first else {
+        let notes = try? context.fetch(fetchRequest).first
+        guard let notes = notes else {
             return nil
         }
 
@@ -274,13 +277,18 @@ extension GitHubUser {
     /// - Parameters:
     ///   - notes: The note text to save.
     ///   - forId: Users GitHub ID.
+    ///   - coreDataStack: The CoreDataStack object.
+    ///   - context: Managed object context. Defaults to background context.
     ///   - completion: A closure that takes no parameter and returns `Void`.
-    static func save(notes text: String, forId id: Int, completion: (()->())? = nil) {
-        let coreDataStack = CoreDataStack.shared
-        let context = coreDataStack.backgroundContext()
+    static func save(notes text: String,
+                     forId id: Int,
+                     coreDataStack: CoreDataStackProtocol = CoreDataStack.shared,
+                     context: NSManagedObjectContext = CoreDataStack.shared.backgroundContext(),
+                     completion: (()->())? = nil) {
 
         context.perform {
             guard let user = GitHubUser.fetchUser(byId: id, context: context) else {
+                completion?()
                 return
             }
 
@@ -301,20 +309,24 @@ extension GitHubUser {
 
     /// Remove profile notes on cache.
     ///
-    /// The remove notes convenience method is non blocking. The completion closure is where any cleanups or next action trigger be placed to ensure
-    /// any they executes after the remove operation has completed.
+    /// The remove notes convenience method is non blocking. The completion closure is where any cleanups or next action trigger be placed to
+    /// ensure any they executes after the remove operation has completed.
     ///
-    /// - Note: If the corresponding user is not found or the user have no stored notes, the remove operation will bail without triggering the completion closure.
+    /// - Note: If the corresponding user is not found or the user have no stored notes, the remove operation will bail without triggering the
+    /// completion closure.
     /// - Parameters:
     ///   - notesForId: The GitHub user ID to remove notes from.
+    ///   - coreDataStack: The CoreData stack. Defaults to global singleton instance.
+    ///   - context: Managed object context. Defaults to background context.
     ///   - completion: A closure that takes no parameter and returns `Void`.
-    static func remove(notesForId id: Int, completion: (()->())? = nil) {
-
-        let coreDataStack = CoreDataStack.shared
-        let context = coreDataStack.backgroundContext()
+    static func remove(notesForId id: Int,
+                       coreDataStack: CoreDataStack = CoreDataStack.shared,
+                       context: NSManagedObjectContext = CoreDataStack.shared.backgroundContext(),
+                       completion: (()->())? = nil) {
 
         context.perform {
             guard let notes = GitHubUser.fetchNotes(byId: id, context: context) else {
+                completion?()
                 return
             }
 

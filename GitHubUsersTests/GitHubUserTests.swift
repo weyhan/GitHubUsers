@@ -97,7 +97,7 @@ final class GitHubUserTests: XCTestCase {
     /// [https://api.github.com/users?since=0](https://api.github.com/users?since=0)
     func testSavingRootContext() throws {
 
-        guard let data = loadBundleFile(withFilename: "testSavingRootContext", extension: "json") else {
+        guard let data = loadBundleFile(withFilename: "first30Users", extension: "json") else {
             XCTFail("Failed to load test data; Decoding JSON test could not proceed.")
             return
         }
@@ -125,12 +125,12 @@ final class GitHubUserTests: XCTestCase {
         }
     }
 
-    /// Test fetch GitHubUser
+    /// Test fetch al GitHubUser
     ///
     /// Mock data is taken from the response of GitHub's API at:
     ///
     /// [https://api.github.com/users?since=0](https://api.github.com/users?since=0)
-    func testFetchGitHubUser() throws {
+    func testAllFetchGitHubUser() throws {
         let context = coreDataStack.mainContext
         let entity = NSEntityDescription.entity(forEntityName: PersistentStore.entityName, in: context)!
         let user = GitHubUser(entity: entity, insertInto: context)
@@ -199,9 +199,141 @@ final class GitHubUserTests: XCTestCase {
         XCTAssertTrue(user.siteAdmin == fetchedUser.siteAdmin, "Mismatched data between save and fetch.")
     }
 
+    /// Test fetch user at row function.
+    ///
+    /// Mock data is taken from the response of GitHub's API at:
+    ///
+    /// [https://api.github.com/users?since=0](https://api.github.com/users?since=0)
+    func testFetchSingleUserAtRow() throws {
+        guard let data = loadBundleFile(withFilename: "first30Users", extension: "json") else {
+            XCTFail("Failed to load test data; Decoding JSON test could not proceed.")
+            return
+        }
+
+        let context = coreDataStack.mainContext
+
+        let jsonService = JSONDecoderService<[GitHubUser]>(context: context, coreDataStack: coreDataStack)
+        let decoded = try? jsonService.decode(data: data)
+
+        guard let decoded = decoded else {
+            XCTFail("Failed to decode JSON")
+            return
+        }
+
+        var row = -1
+        decoded.forEach {
+            row += 1
+            $0.row = Int64(row)
+        }
+
+        coreDataStack.saveContextAndWait(context)
+
+        guard let user = GitHubUser.fetchUser(atRow: row, context: context) else {
+            XCTFail("Failed to fetch user at row \(row)")
+            return
+        }
+
+        XCTAssertTrue(user.row == row && user.login == "bmizerany", "Fetched user at wrong row")
+    }
+
+    /// Test fetch user at non-existence row function.
+    ///
+    /// Mock data is taken from the response of GitHub's API at:
+    ///
+    /// [https://api.github.com/users?since=0](https://api.github.com/users?since=0)
+    func testFetchSingleUserAtRow_FailCase() throws {
+        guard let data = loadBundleFile(withFilename: "first30Users", extension: "json") else {
+            XCTFail("Failed to load test data; Decoding JSON test could not proceed.")
+            return
+        }
+
+        let context = coreDataStack.mainContext
+
+        let jsonService = JSONDecoderService<[GitHubUser]>(context: context, coreDataStack: coreDataStack)
+        let decoded = try? jsonService.decode(data: data)
+
+        guard let decoded = decoded else {
+            XCTFail("Failed to decode JSON")
+            return
+        }
+
+        var row = -1
+        decoded.forEach {
+            row += 1
+            $0.row = Int64(row)
+        }
+
+        coreDataStack.saveContextAndWait(context)
+
+        row += 1
+        let user1 = GitHubUser.fetchUser(atRow: row, context: context)
+        XCTAssertNil(user1, "fetch using non-existence row should fail but returned bogus result")
+
+        row += 1
+        let user2 = GitHubUser.fetchUser(atRow: row, context: context)
+        XCTAssertNil(user2, "fetch using non-existence row should fail but returned bogus result")
+
+        row += 100
+        let user3 = GitHubUser.fetchUser(atRow: row, context: context)
+        XCTAssertNil(user3, "fetch using non-existence row should fail but returned bogus result")
+
+        row = -1
+        let user4 = GitHubUser.fetchUser(atRow: row, context: context)
+        XCTAssertNil(user4, "fetch using non-existence row should fail but returned bogus result")
+
+        row -= 1
+        let user5 = GitHubUser.fetchUser(atRow: row, context: context)
+        XCTAssertNil(user5, "fetch using non-existence row should fail but returned bogus result")
+
+        row -= 100
+        let user6 = GitHubUser.fetchUser(atRow: row, context: context)
+        XCTAssertNil(user6, "fetch using non-existence row should fail but returned bogus result")
+    }
+
+    /// Test fetch user by ID function.
+    ///
+    /// Mock data is taken from the response of GitHub's API at:
+    ///
+    /// [https://api.github.com/users?since=0](https://api.github.com/users?since=0)
+    func testFetchSingleUserById() throws {
+        let context = coreDataStack.mainContext
+
+        guard loadFirst30UserMockData(context: context) == true else {
+            XCTFail("Failed to load and decode test data; Test could not proceed.")
+            return
+        }
+
+        let id = 20
+        guard let user = GitHubUser.fetchUser(byId: id, context: context) else {
+            XCTFail("Failed to fetch user at with ID \(id)")
+            return
+        }
+
+        XCTAssertTrue(user.id == id && user.login == "kevinclark", "Fetched user at wrong ID")
+    }
+
+    /// Test fetch user by ID function with non-existence ID.
+    ///
+    /// Mock data is taken from the response of GitHub's API at:
+    ///
+    /// [https://api.github.com/users?since=0](https://api.github.com/users?since=0)
+    func testFetchSingleUserById_FailedCase() throws {
+        let context = coreDataStack.mainContext
+
+        guard loadFirst30UserMockData(context: context) == true else {
+            XCTFail("Failed to load and decode test data; Test could not proceed.")
+            return
+        }
+
+        let id = 50
+        let user = GitHubUser.fetchUser(byId: id, context: context)
+        XCTAssertNil(user, "fetch using non-existence ID should fail but returned bogus result")
+    }
+
     /// Fail case for decoding json data test.
     ///
     /// This test is expected to fail in decoding the mock data because the input json structure is a mismatch with the decode model.
+    ///
     /// Mock data is taken from the response of GitHub's API at:
     ///
     /// [https://api.github.com/users/defunkt](https://api.github.com/users/defunkt)
@@ -226,11 +358,15 @@ extension GitHubUserTests {
     /// Test update individual GitHubUser profile.
     ///
     /// Update GitHub user profile cached from GitHub user list API with GitHub user profile from individual user profile API.
-    func testUpdateGitHubUersWithIndividualProfileJSON() throws {
+    ///
+    /// Mock data is taken from the response of GitHub's API at:
+    ///
+    /// [https://api.github.com/users?since=0](https://api.github.com/users?since=0)
+    func testUpdateGitHubUsersWithIndividualProfileJSON() throws {
         // Setup for test.
         // =================================================
         // Load mock data from GitHub user list API.
-        guard let data = loadBundleFile(withFilename: "testUpdateGitHubUersWithIndividualProfileData-1", extension: "json") else {
+        guard let data = loadBundleFile(withFilename: "testUpdateGitHubUsersWithIndividualProfileData-1", extension: "json") else {
             XCTFail("Failed to load test data; Decoding JSON test could not proceed.")
             return
         }
@@ -256,8 +392,8 @@ extension GitHubUserTests {
 
         // Test update.
         // =================================================
-        // Load moke JSON from GitHub single user API.
-        guard let data2 = loadBundleFile(withFilename: "testUpdateGitHubUersWithIndividualProfileData-2", extension: "json") else {
+        // Load mock JSON from GitHub single user API.
+        guard let data2 = loadBundleFile(withFilename: "testUpdateGitHubUsersWithIndividualProfileData-2", extension: "json") else {
             XCTFail("Failed to load test data; Decoding JSON test could not proceed.")
             return
         }
@@ -295,6 +431,10 @@ extension GitHubUserTests {
     /// Test decode individual GitHubUser profile where `hireable` is not `null`.
     ///
     /// Decode GitHub user profile of user from individual user profile API where `hireable` is not `null`.
+    ///
+    /// Mock data is taken from the response of GitHub's API at:
+    ///
+    /// [https://api.github.com/users?since=0](https://api.github.com/users?since=0)
     func testDecodeHireable() throws {
         guard let data = loadBundleFile(withFilename: "testDecodeHireable", extension: "json") else {
             XCTFail("Failed to load test data; Decoding JSON test could not proceed.")
@@ -330,6 +470,34 @@ extension GitHubUserTests {
         XCTAssertTrue(fetched.count == 1, "Unexpected decoded result")
         XCTAssert(fetched[0].hireable?.boolValue == true, "Unexpected decoded result")
     }
+
+    /// Test fetching the ID belonging to the last cached GitHub user.
+    ///
+    /// Mock data is taken from the response of GitHub's API at:
+    ///
+    /// [https://api.github.com/users?since=0](https://api.github.com/users?since=0)
+    func testLastId() throws {
+        // Setup for test.
+        // =================================================
+        // Load mock data from GitHub user list API.
+        guard let data = loadBundleFile(withFilename: "testLastId", extension: "json") else {
+            XCTFail("Failed to load test data; Decoding JSON test could not proceed.")
+            return
+        }
+
+        let context = coreDataStack.mainContext
+
+        let jsonService = JSONDecoderService<[GitHubUser]>(context: context, coreDataStack: coreDataStack)
+        let decoded = try? jsonService.decode(data: data)
+
+        XCTAssertNotNil(decoded)
+
+        coreDataStack.saveContextAndWait(context)
+
+        let lastId = GitHubUser.lastId(context: context)
+        print("lastId: \(lastId)")
+        XCTAssertTrue(lastId == 20, "Failed to get the ID of the last profile.")
+    }
 }
 
 // MARK: - Mockups
@@ -350,4 +518,17 @@ extension GitHubUserTests {
         return try? Data(contentsOf: url)
     }
 
+    func loadFirst30UserMockData(context: NSManagedObjectContext) -> Bool {
+        guard let data = loadBundleFile(withFilename: "first30Users", extension: "json") else {
+            return false
+        }
+
+        let jsonService = JSONDecoderService<[GitHubUser]>(context: context, coreDataStack: coreDataStack)
+        let decoded = try? jsonService.decode(data: data)
+
+        guard decoded != nil else { return false }
+        coreDataStack.saveContextAndWait(context)
+
+        return true
+    }
 }
