@@ -36,7 +36,7 @@ class NetworkDataTask: NSObject, NetworkQueueable {
             if let error = error as? NSError {
                 let networkError = NetworkError.mapping(code: error.code)
 
-                if networkError != .timeout {
+                if networkError != .timeout && networkError != .cancelled {
                     NetworkState.shared.set(networkState: .connectedToInternetEstablished)
                 }
                 completion(.failure(networkError))
