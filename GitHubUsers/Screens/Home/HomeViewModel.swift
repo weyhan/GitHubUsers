@@ -348,6 +348,11 @@ extension HomeViewModel {
                     if case .success(let user) = decodeResult {
                         PagingControl.shared.set(pageLength: user.count)
                         self.refreshUI()
+
+                    } else {
+                        DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 5) { [weak self] in
+                            self?.loadNewData()
+                        }
                     }
                 }
             }
