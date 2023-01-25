@@ -52,6 +52,7 @@
 		6FD8E5032956543C00BEC5C0 /* MockCoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD8E5022956543C00BEC5C0 /* MockCoreDataStack.swift */; };
 		6FE1EBA729520FA100E579C6 /* first30Users.json in Resources */ = {isa = PBXBuildFile; fileRef = 6FE1EBA629520FA100E579C6 /* first30Users.json */; };
 		6FE80C0B29784D84005B412E /* StringUtilitiesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE80C0A29784D84005B412E /* StringUtilitiesTests.swift */; };
+		6FE82B3429812A9C008AE8BC /* FileManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE82B3329812A9C008AE8BC /* FileManagerTests.swift */; };
 		6FEB0BDA296295E300123972 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEB0BD9296295E300123972 /* ProfileViewModel.swift */; };
 		6FEB0BDD2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-2.json in Resources */ = {isa = PBXBuildFile; fileRef = 6FEB0BDB2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-2.json */; };
 		6FEB0BDE2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-1.json in Resources */ = {isa = PBXBuildFile; fileRef = 6FEB0BDC2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-1.json */; };
@@ -121,6 +122,7 @@
 		6FD8E5022956543C00BEC5C0 /* MockCoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCoreDataStack.swift; sourceTree = "<group>"; };
 		6FE1EBA629520FA100E579C6 /* first30Users.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = first30Users.json; sourceTree = "<group>"; };
 		6FE80C0A29784D84005B412E /* StringUtilitiesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringUtilitiesTests.swift; sourceTree = "<group>"; };
+		6FE82B3329812A9C008AE8BC /* FileManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerTests.swift; sourceTree = "<group>"; };
 		6FEB0BD9296295E300123972 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		6FEB0BDB2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "testUpdateGitHubUsersWithIndividualProfileData-2.json"; sourceTree = "<group>"; };
 		6FEB0BDC2962F55800123972 /* testUpdateGitHubUsersWithIndividualProfileData-1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "testUpdateGitHubUsersWithIndividualProfileData-1.json"; sourceTree = "<group>"; };
@@ -322,6 +324,7 @@
 			isa = PBXGroup;
 			children = (
 				6FE80C0A29784D84005B412E /* StringUtilitiesTests.swift */,
+				6FE82B3329812A9C008AE8BC /* FileManagerTests.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -519,6 +522,7 @@
 				6FEEB9A2294F96BA004E5ED4 /* GitHubUserTests.swift in Sources */,
 				6FD8E5032956543C00BEC5C0 /* MockCoreDataStack.swift in Sources */,
 				6FBE13FB297809CA001AEB30 /* GitHubUserNotesTests.swift in Sources */,
+				6FE82B3429812A9C008AE8BC /* FileManagerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -665,6 +669,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NQMM6NPW4K;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GitHubUsers/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -696,6 +701,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NQMM6NPW4K;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GitHubUsers/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

@@ -10,6 +10,7 @@ import XCTest
 
 final class StringUtilitiesTests: XCTestCase {
 
+    /// Test display string function for strings.
     func testDisplayTextForStrings() throws {
         let nilString: String? = nil
         let displayNilString = displayText(nilString)
@@ -22,6 +23,7 @@ final class StringUtilitiesTests: XCTestCase {
         XCTAssertTrue(displayString == string)
     }
 
+    /// Test display string function for Int.
     func testDisplayTextForInt() throws {
         let nilInt: Int? = nil
         let displayNilIntString = displayText(nilInt)
